@@ -105,10 +105,11 @@ const UmlDiagramDesigner: React.FC<UmlDiagramDesignerProps> = ({ initialData, on
       setDraggingTable(tableId);
       setSelectedTable(tableId);
       const table = tables.find(t => t.id === tableId);
-      if (table) {
+      if (table && canvasRef.current) {
+        const rect = canvasRef.current.getBoundingClientRect();
         setDragOffset({
-          x: e.clientX - table.x,
-          y: e.clientY - table.y,
+          x: e.clientX - rect.left - table.x,
+          y: e.clientY - rect.top - table.y,
         });
       }
     }
