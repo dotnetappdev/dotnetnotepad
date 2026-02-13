@@ -161,12 +161,15 @@ Once a release is created, users can:
 
 ## Version Numbering
 
-Follow semantic versioning:
-- **Major.Minor.Patch.Build** (e.g., 1.0.0.1)
-- Increment **Major** for breaking changes
-- Increment **Minor** for new features
-- Increment **Patch** for bug fixes
-- Increment **Build** for small updates
+This project uses a four-segment version format: **Major.Minor.Patch.Build** (e.g., 1.0.0.1)
+
+This is an extension of semantic versioning with an additional build number:
+- Increment **Major** for breaking changes (e.g., 2.0.0.0)
+- Increment **Minor** for new features (e.g., 1.1.0.0)
+- Increment **Patch** for bug fixes (e.g., 1.0.1.0)
+- Increment **Build** for small updates, hotfixes, or documentation changes (e.g., 1.0.0.2)
+
+The fourth segment allows for quick iterations without affecting the semantic version.
 
 ## Automation Details
 
