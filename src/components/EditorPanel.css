@@ -1,0 +1,189 @@
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.tabs {
+  display: flex;
+  background-color: #2d2d30;
+  border-bottom: 1px solid #3c3c3c;
+  overflow-x: auto;
+  white-space: nowrap;
+  align-items: center;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #2d2d30;
+  border-right: 1px solid #252526;
+  cursor: pointer;
+  font-size: 13px;
+  color: #969696;
+  transition: background-color 0.1s;
+}
+
+.tab:hover {
+  background-color: #1e1e1e;
+}
+
+.tab.active {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-bottom: 2px solid #007acc;
+}
+
+.tab-name {
+  margin-right: 8px;
+}
+
+.execution-controls {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.control-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.play-btn {
+  background-color: #16825d;
+  color: white;
+}
+
+.play-btn:hover {
+  background-color: #1e9e6d;
+  transform: scale(1.05);
+}
+
+.pause-btn {
+  background-color: #c5a020;
+  color: white;
+}
+
+.pause-btn:hover {
+  background-color: #d4b030;
+}
+
+.pause-btn.active {
+  background-color: #d4b030;
+}
+
+.stop-btn {
+  background-color: #d13438;
+  color: white;
+}
+
+.stop-btn:hover {
+  background-color: #e0474b;
+  transform: scale(1.05);
+}
+
+.execute-btn {
+  margin-left: auto;
+  padding: 4px 12px;
+  background-color: #16825d;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 8px;
+}
+
+.execute-btn:hover {
+  background-color: #1e9e6d;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #969696;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.editor-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+.no-file-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+  color: #cccccc;
+}
+
+.no-file-open h2 {
+  font-size: 32px;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.no-file-open p {
+  font-size: 16px;
+  margin-bottom: 32px;
+  color: #969696;
+}
+
+.features {
+  text-align: left;
+  background-color: #252526;
+  padding: 24px;
+  border-radius: 4px;
+  max-width: 500px;
+}
+
+.features h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features li {
+  padding: 8px 0;
+  font-size: 14px;
+  color: #cccccc;
+}

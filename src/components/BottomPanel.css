@@ -1,0 +1,221 @@
+.bottom-panel {
+  height: 250px;
+  background-color: #1e1e1e;
+  border-top: 1px solid #3c3c3c;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-tabs {
+  display: flex;
+  background-color: #2d2d30;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.panel-tab {
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #969696;
+  border-right: 1px solid #252526;
+  transition: background-color 0.1s;
+}
+
+.panel-tab:hover {
+  background-color: #1e1e1e;
+}
+
+.panel-tab.active {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-bottom: 2px solid #007acc;
+}
+
+.panel-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.terminal-content,
+.debug-content,
+.console-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.output {
+  flex: 1;
+  overflow-y: auto;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  color: #cccccc;
+}
+
+.output-line {
+  padding: 2px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.command-input {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid #3c3c3c;
+}
+
+.prompt {
+  margin-right: 8px;
+  color: #4ec9b0;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.command-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #cccccc;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  outline: none;
+}
+
+.command-input input::placeholder {
+  color: #6a6a6a;
+}
+
+.debug-controls,
+.console-controls {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid #3c3c3c;
+}
+
+.debug-controls button,
+.console-controls button {
+  padding: 4px 12px;
+  background-color: #0e639c;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.debug-controls button:hover,
+.console-controls button:hover {
+  background-color: #1177bb;
+}
+
+/* Results Tab Styles */
+.results-content {
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.results-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  background-color: #252526;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.view-mode-btn {
+  padding: 4px 12px;
+  background-color: #3c3c3c;
+  color: #cccccc;
+  border: 1px solid #555555;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.view-mode-btn.active {
+  background-color: #007acc;
+  color: #ffffff;
+  border-color: #007acc;
+}
+
+.view-mode-btn:hover {
+  background-color: #505050;
+}
+
+.view-mode-btn.active:hover {
+  background-color: #1177bb;
+}
+
+.grid-view {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.results-table th,
+.results-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid #3c3c3c;
+  color: #cccccc;
+}
+
+.results-table th {
+  background-color: #2d2d30;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.results-table tbody tr:hover {
+  background-color: #2a2d2e;
+}
+
+.results-footer {
+  padding: 8px;
+  font-size: 12px;
+  color: #858585;
+  font-style: italic;
+  border-top: 1px solid #3c3c3c;
+  background-color: #252526;
+}
+
+.text-view {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.text-view pre {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  color: #cccccc;
+  margin: 0;
+  white-space: pre;
+}
+
+.no-results {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #858585;
+  font-size: 13px;
+}
+
+.no-results p {
+  margin: 4px 0;
+}
