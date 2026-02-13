@@ -6,6 +6,7 @@ interface MenuBarProps {
   onNewUmlDiagram: () => void;
   onNewCodeFile: () => void;
   onNewWhiteboard: () => void;
+  onNewApiTester: () => void;
   onNewDotnetConsole: () => void;
   onNewDotnetWebApi: () => void;
   onSaveFile: () => void;
@@ -19,6 +20,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
   onNewUmlDiagram,
   onNewCodeFile,
   onNewWhiteboard,
+  onNewApiTester,
   onNewDotnetConsole,
   onNewDotnetWebApi,
   onSaveFile,
@@ -34,6 +36,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
       { label: 'New Code File', action: onNewCodeFile, shortcut: 'Ctrl+Alt+N' },
       { label: 'New UML Diagram', action: onNewUmlDiagram, shortcut: 'Ctrl+Alt+U' },
       { label: 'New Whiteboard', action: onNewWhiteboard, shortcut: '' },
+      { label: 'New API Tester', action: onNewApiTester, shortcut: '' },
       { label: 'divider', action: () => {}, shortcut: '' },
       { label: 'New .NET Console App', action: onNewDotnetConsole, shortcut: '' },
       { label: 'New .NET Web API', action: onNewDotnetWebApi, shortcut: '' },

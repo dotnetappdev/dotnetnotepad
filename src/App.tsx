@@ -7,6 +7,7 @@ import BottomPanel from './components/BottomPanel';
 import DatabasePanel from './components/DatabasePanel';
 import UmlDiagramDesigner from './components/UmlDiagramDesigner';
 import WhiteboardDesigner from './components/WhiteboardDesigner';
+import ApiTester from './components/ApiTester';
 import './App.css';
 
 interface OpenFile {
@@ -15,6 +16,7 @@ interface OpenFile {
   language: string;
   isUmlDiagram?: boolean;
   isWhiteboard?: boolean;
+  isApiTester?: boolean;
 }
 
 interface QueryResult {
@@ -144,6 +146,7 @@ const App: React.FC = () => {
   const handleNewDotnetConsole = () => {
     const projectName = prompt('Enter project name:', 'ConsoleApp');
     if (projectName) {
+      const dotnetVersion = prompt('Enter .NET version (6.0, 7.0, 8.0):', '8.0') || '8.0';
       const programCs = `using System;
 
 namespace ${projectName}
@@ -154,6 +157,7 @@ namespace ${projectName}
         {
             Console.WriteLine("Hello, World!");
             Console.WriteLine("Welcome to .NET Console Application");
+            Console.WriteLine(".NET Version: ${dotnetVersion}");
             
             // Your code here
             
@@ -167,7 +171,7 @@ namespace ${projectName}
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net${dotnetVersion.replace('.', '')}</TargetFramework>
     <RootNamespace>${projectName}</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -183,6 +187,7 @@ namespace ${projectName}
       setConsoleOutput(prev => [
         ...prev,
         `\n.NET Console Application '${projectName}' created successfully!`,
+        `Target Framework: .NET ${dotnetVersion}`,
         `Files: Program.cs, ${projectName}.csproj`,
       ]);
     }
@@ -191,6 +196,7 @@ namespace ${projectName}
   const handleNewDotnetWebApi = () => {
     const projectName = prompt('Enter project name:', 'WebApiApp');
     if (projectName) {
+      const dotnetVersion = prompt('Enter .NET version (6.0, 7.0, 8.0):', '8.0') || '8.0';
       const programCs = `using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -274,14 +280,14 @@ namespace ${projectName}.Controllers
       const csproj = `<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net${dotnetVersion.replace('.', '')}</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>${projectName}</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="${dotnetVersion}.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
@@ -307,9 +313,30 @@ namespace ${projectName}.Controllers
       setConsoleOutput(prev => [
         ...prev,
         `\n.NET Web API Application '${projectName}' created successfully!`,
+        `Target Framework: .NET ${dotnetVersion}`,
         `Files: Program.cs, WeatherForecastController.cs, ${projectName}.csproj, appsettings.json`,
         `API includes: Swagger UI, GET and POST endpoints`,
       ]);
+    }
+  };
+
+  const handleNewApiTester = () => {
+    const fileName = prompt('Enter API test file name:', 'api-test');
+    if (fileName) {
+      const fullFileName = fileName.endsWith('.apitest') ? fileName : `${fileName}.apitest`;
+      const initialData = JSON.stringify({
+        collections: [],
+        requests: [],
+        bearerToken: ''
+      }, null, 2);
+      const newFile: OpenFile = {
+        path: `${workspaceFolder}/${fullFileName}`,
+        content: initialData,
+        language: 'json',
+        isApiTester: true,
+      };
+      setOpenFiles([...openFiles, newFile]);
+      setActiveFile(newFile.path);
     }
   };
 
@@ -410,6 +437,7 @@ namespace ${projectName}.Controllers
     { id: 'new-code-file', label: 'New Code File', action: handleNewCodeFile, category: 'File' },
     { id: 'new-uml-diagram', label: 'New UML Diagram', action: handleNewUmlDiagram, category: 'File' },
     { id: 'new-whiteboard', label: 'New Whiteboard', action: handleNewWhiteboard, category: 'File' },
+    { id: 'new-api-tester', label: 'New API Tester', action: handleNewApiTester, category: 'File' },
     { id: 'new-dotnet-console', label: 'New .NET Console App', action: handleNewDotnetConsole, category: 'File' },
     { id: 'new-dotnet-webapi', label: 'New .NET Web API', action: handleNewDotnetWebApi, category: 'File' },
     { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
@@ -428,6 +456,7 @@ namespace ${projectName}.Controllers
         onNewCodeFile={handleNewCodeFile}
         onNewUmlDiagram={handleNewUmlDiagram}
         onNewWhiteboard={handleNewWhiteboard}
+        onNewApiTester={handleNewApiTester}
         onNewDotnetConsole={handleNewDotnetConsole}
         onNewDotnetWebApi={handleNewDotnetWebApi}
         onSaveFile={handleSaveFile}
@@ -447,6 +476,11 @@ namespace ${projectName}.Controllers
             />
           ) : activeFileObj?.isWhiteboard ? (
             <WhiteboardDesigner
+              initialData={activeFileObj.content}
+              onChange={(data) => handleContentChange(activeFileObj.path, data)}
+            />
+          ) : activeFileObj?.isApiTester ? (
+            <ApiTester
               initialData={activeFileObj.content}
               onChange={(data) => handleContentChange(activeFileObj.path, data)}
             />
