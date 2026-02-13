@@ -115,7 +115,7 @@ const App: React.FC = () => {
         '--- Output ---',
         'Hello from .NET!',
         'Application completed successfully.',
-        `Execution time: ${Math.random() * 100 | 0}ms`,
+        `Execution time: ${Math.floor(Math.random() * 100)}ms`,
       ]);
     } else if (language === 'sql') {
       // Simulate SQL execution
