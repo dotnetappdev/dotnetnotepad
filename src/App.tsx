@@ -248,7 +248,7 @@ namespace ${projectName}.Controllers
     {
         public DateOnly Date { get; set; }
         public int TemperatureC { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public int TemperatureF => 32 + (int)(TemperatureC * 1.8);
         public string? Summary { get; set; }
     }
 }`;
@@ -290,7 +290,7 @@ namespace ${projectName}.Controllers
         ...prev,
         `\n.NET Web API Application '${projectName}' created successfully!`,
         `Files: Program.cs, WeatherForecastController.cs, ${projectName}.csproj, appsettings.json`,
-        `API includes: Swagger UI, CRUD endpoints`,
+        `API includes: Swagger UI, GET and POST endpoints`,
       ]);
     }
   };
