@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import SearchPanel from './SearchPanel';
 import './FileExplorer.css';
 
 interface FileNode {
@@ -24,6 +23,8 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileOpen, onSaveFile }) =
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [folderOpen, setFolderOpen] = useState(false);
+  const [folderPath, setFolderPath] = useState('/workspace');
 
   // Sample file structure - in a real app, this would come from a file system API
   const [files] = useState<FileNode[]>([
@@ -324,6 +325,27 @@ Result = BinarySearch(A, T) = 3`;
     setContextMenu(null);
   };
 
+  const handleOpenFolder = () => {
+    const folder = prompt('Enter folder path:', folderPath);
+    if (folder) {
+      setFolderPath(folder);
+      setFolderOpen(true);
+      // Expand the root folders by default
+      const newExpanded = new Set(expanded);
+      files.forEach(node => {
+        if (node.type === 'folder') {
+          newExpanded.add(node.path);
+        }
+      });
+      setExpanded(newExpanded);
+    }
+  };
+
+  const handleCloseFolder = () => {
+    setFolderOpen(false);
+    setExpanded(new Set());
+  };
+
   const filterNodes = (nodes: FileNode[], query: string): FileNode[] => {
     if (!query) return nodes;
     
@@ -379,11 +401,54 @@ Result = BinarySearch(A, T) = 3`;
 
   return (
     <div className="file-explorer">
-      <div className="explorer-header">EXPLORER</div>
-      <SearchPanel onSearch={setSearchQuery} />
-      <div className="file-tree">
-        {filteredFiles.map(node => renderNode(node))}
+      <div className="explorer-header">
+        <span>EXPLORER</span>
+        {folderOpen && (
+          <button 
+            className="header-action" 
+            onClick={handleCloseFolder}
+            title="Close Folder"
+          >
+            ×
+          </button>
+        )}
       </div>
+      {!folderOpen ? (
+        <div className="folder-actions">
+          <button className="open-folder-btn" onClick={handleOpenFolder}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M14.5 3H7.71l-.85-.85L6.51 2h-5l-.5.5v11l.5.5h13l.5-.5v-10L14.5 3zm-.51 8.49V13h-12V7h4.49l.35-.15.86-.86H14v1.5l.01 4zm0-6.49h-6.5l-.35.15-.86.86H2v-3h4.29l.85.85.36.15H14l-.01.99z"/>
+            </svg>
+            Open Folder
+          </button>
+          <p className="folder-hint">You have not yet opened a folder.</p>
+        </div>
+      ) : (
+        <>
+          <div className="workspace-section">
+            <div className="workspace-header" onClick={() => {
+              const allExpanded = files.every(f => f.type === 'file' || expanded.has(f.path));
+              const newExpanded = new Set<string>();
+              if (!allExpanded) {
+                files.forEach(node => {
+                  if (node.type === 'folder') {
+                    newExpanded.add(node.path);
+                  }
+                });
+              }
+              setExpanded(newExpanded);
+            }}>
+              <span className="workspace-icon">
+                {files.every(f => f.type === 'file' || expanded.has(f.path)) ? '▼' : '▶'}
+              </span>
+              <span className="workspace-name">{folderPath.split('/').pop() || 'WORKSPACE'}</span>
+            </div>
+            <div className="file-tree">
+              {filteredFiles.map(node => renderNode(node))}
+            </div>
+          </div>
+        </>
+      )}
       {contextMenu && (
         <div
           className="context-menu"
@@ -412,6 +477,10 @@ Result = BinarySearch(A, T) = 3`;
           <div className="context-menu-divider" />
           <div className="context-menu-item" onClick={() => handleDeleteFile(contextMenu.node.path)}>
             Delete
+          </div>
+          <div className="context-menu-divider" />
+          <div className="context-menu-item" onClick={handleCloseFolder}>
+            Close Folder
           </div>
         </div>
       )}
