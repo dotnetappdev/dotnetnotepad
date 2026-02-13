@@ -346,6 +346,19 @@ Result = BinarySearch(A, T) = 3`;
     setExpanded(new Set());
   };
 
+  const handleWorkspaceToggle = () => {
+    const allExpanded = files.every(f => f.type === 'file' || expanded.has(f.path));
+    const newExpanded = new Set<string>();
+    if (!allExpanded) {
+      files.forEach(node => {
+        if (node.type === 'folder') {
+          newExpanded.add(node.path);
+        }
+      });
+    }
+    setExpanded(newExpanded);
+  };
+
   const filterNodes = (nodes: FileNode[], query: string): FileNode[] => {
     if (!query) return nodes;
     
@@ -426,22 +439,13 @@ Result = BinarySearch(A, T) = 3`;
       ) : (
         <>
           <div className="workspace-section">
-            <div className="workspace-header" onClick={() => {
-              const allExpanded = files.every(f => f.type === 'file' || expanded.has(f.path));
-              const newExpanded = new Set<string>();
-              if (!allExpanded) {
-                files.forEach(node => {
-                  if (node.type === 'folder') {
-                    newExpanded.add(node.path);
-                  }
-                });
-              }
-              setExpanded(newExpanded);
-            }}>
+            <div className="workspace-header" onClick={handleWorkspaceToggle}>
               <span className="workspace-icon">
                 {files.every(f => f.type === 'file' || expanded.has(f.path)) ? '▼' : '▶'}
               </span>
-              <span className="workspace-name">{folderPath.split(/[/\\]/).filter(Boolean).pop() || 'WORKSPACE'}</span>
+              <span className="workspace-name">
+                {folderPath.replace(/[/\\]+$/, '').split(/[/\\]/).filter(Boolean).pop() || 'WORKSPACE'}
+              </span>
             </div>
             <div className="file-tree">
               {filteredFiles.map(node => renderNode(node))}
