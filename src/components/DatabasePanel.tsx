@@ -39,13 +39,19 @@ const DatabasePanel: React.FC = () => {
     setError(null);
     
     if (query.toLowerCase().includes('select')) {
-      // Simulate SELECT query result
+      // Simulate SELECT query result with current dates
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const twoDaysAgo = new Date(today);
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      
       setQueryResult({
         columns: ['Id', 'Name', 'Email', 'CreatedDate'],
         rows: [
-          [1, 'John Doe', 'john@example.com', '2024-01-15'],
-          [2, 'Jane Smith', 'jane@example.com', '2024-01-16'],
-          [3, 'Bob Johnson', 'bob@example.com', '2024-01-17'],
+          [1, 'John Doe', 'john@example.com', twoDaysAgo.toISOString().split('T')[0]],
+          [2, 'Jane Smith', 'jane@example.com', yesterday.toISOString().split('T')[0]],
+          [3, 'Bob Johnson', 'bob@example.com', today.toISOString().split('T')[0]],
         ],
       });
     } else if (query.toLowerCase().includes('insert')) {
