@@ -6,27 +6,62 @@ interface QueryResult {
   rows: any[][];
 }
 
+interface Table {
+  name: string;
+  schema: string;
+}
+
+type DatabaseType = 'sqlserver' | 'postgresql' | 'sqlite';
+
 const DatabasePanel: React.FC = () => {
+  const [dbType, setDbType] = useState<DatabaseType>('sqlserver');
   const [connectionString, setConnectionString] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [query, setQuery] = useState('');
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [tables, setTables] = useState<Table[]>([]);
+  const [showTables, setShowTables] = useState(false);
+
+  const getDefaultConnectionString = (type: DatabaseType): string => {
+    switch (type) {
+      case 'sqlserver':
+        return 'Server=localhost;Database=MyDatabase;Integrated Security=true;';
+      case 'postgresql':
+        return 'Host=localhost;Database=mydb;Username=postgres;Password=password;';
+      case 'sqlite':
+        return 'Data Source=database.db;';
+    }
+  };
 
   const handleConnect = () => {
     if (!connectionString.trim()) {
       setError('Please enter a connection string');
       return;
     }
-    // Simulate connection
+    // Simulate connection and load tables
     setIsConnected(true);
     setError(null);
+    setTables([
+      { name: 'Users', schema: 'dbo' },
+      { name: 'Products', schema: 'dbo' },
+      { name: 'Orders', schema: 'dbo' },
+      { name: 'OrderDetails', schema: 'dbo' },
+      { name: 'Categories', schema: 'dbo' },
+    ]);
+    setShowTables(true);
   };
 
   const handleDisconnect = () => {
     setIsConnected(false);
     setConnectionString('');
     setQueryResult(null);
+    setTables([]);
+    setShowTables(false);
+  };
+
+  const handleTableClick = (table: Table) => {
+    setQuery(`SELECT * FROM ${table.schema}.${table.name};`);
   };
 
   const handleExecuteQuery = () => {
@@ -91,13 +126,29 @@ var users = await dbContext.Users
       <div className="db-header">DATABASE</div>
       
       <div className="connection-section">
+        <h3>Database Type</h3>
+        <select 
+          className="db-type-select"
+          value={dbType}
+          onChange={(e) => {
+            const newType = e.target.value as DatabaseType;
+            setDbType(newType);
+            setConnectionString(getDefaultConnectionString(newType));
+          }}
+          disabled={isConnected}
+        >
+          <option value="sqlserver">SQL Server</option>
+          <option value="postgresql">PostgreSQL</option>
+          <option value="sqlite">SQLite</option>
+        </select>
+        
         <h3>Connection</h3>
         {!isConnected ? (
           <>
             <input
               type="text"
               className="connection-input"
-              placeholder="Server=localhost;Database=MyDb;..."
+              placeholder={getDefaultConnectionString(dbType)}
               value={connectionString}
               onChange={(e) => setConnectionString(e.target.value)}
             />
@@ -108,13 +159,30 @@ var users = await dbContext.Users
         ) : (
           <div className="connected-status">
             <span className="status-icon">✓</span>
-            <span>Connected</span>
+            <span>Connected ({dbType})</span>
             <button className="disconnect-btn" onClick={handleDisconnect}>
               Disconnect
             </button>
           </div>
         )}
       </div>
+
+      {isConnected && showTables && (
+        <div className="tables-section">
+          <h3>Tables</h3>
+          <div className="tables-list">
+            {tables.map((table) => (
+              <div
+                key={table.name}
+                className="table-item"
+                onClick={() => handleTableClick(table)}
+              >
+                📊 {table.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {isConnected && (
         <>

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import MenuBar from './components/MenuBar';
+import CommandPalette from './components/CommandPalette';
 import FileExplorer from './components/FileExplorer';
 import EditorPanel from './components/EditorPanel';
 import BottomPanel from './components/BottomPanel';
@@ -15,6 +17,25 @@ const App: React.FC = () => {
   const [openFiles, setOpenFiles] = useState<OpenFile[]>([]);
   const [activeFile, setActiveFile] = useState<string | null>(null);
   const [showDatabase, setShowDatabase] = useState(false);
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [workspaceFolder, setWorkspaceFolder] = useState('/workspace');
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        setShowCommandPalette(true);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        handleSaveFile();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeFile, openFiles]);
 
   const handleFileOpen = (path: string, content: string, language: string) => {
     const existingFile = openFiles.find(f => f.path === path);
@@ -38,22 +59,53 @@ const App: React.FC = () => {
     ));
   };
 
+  const handleNewFile = () => {
+    const fileName = prompt('Enter file name:', 'newfile.cs');
+    if (fileName) {
+      handleFileOpen(`${workspaceFolder}/${fileName}`, '', 'plaintext');
+    }
+  };
+
+  const handleSaveFile = () => {
+    if (activeFile) {
+      const file = openFiles.find(f => f.path === activeFile);
+      if (file) {
+        console.log('Saving file:', activeFile, file.content);
+        alert(`File saved: ${activeFile}`);
+      }
+    }
+  };
+
+  const handleOpenFolder = () => {
+    const folder = prompt('Enter workspace folder path:', workspaceFolder);
+    if (folder) {
+      setWorkspaceFolder(folder);
+      console.log('Workspace folder set to:', folder);
+    }
+  };
+
+  const commands = [
+    { id: 'new-file', label: 'New File', action: handleNewFile, category: 'File' },
+    { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
+    { id: 'open-folder', label: 'Open Folder', action: handleOpenFolder, category: 'File' },
+    { id: 'toggle-database', label: 'Toggle Database Panel', action: () => setShowDatabase(!showDatabase), category: 'View' },
+    { id: 'close-file', label: 'Close File', action: () => activeFile && handleFileClose(activeFile), category: 'File' },
+  ];
+
   const activeFileObj = openFiles.find(f => f.path === activeFile);
 
   return (
     <div className="app">
-      <div className="top-bar">
-        <div className="title">.NET Notepad</div>
-        <button 
-          className="db-button" 
-          onClick={() => setShowDatabase(!showDatabase)}
-        >
-          {showDatabase ? 'Hide' : 'Show'} Database
-        </button>
-      </div>
+      <MenuBar
+        onNewFile={handleNewFile}
+        onSaveFile={handleSaveFile}
+        onOpenFolder={handleOpenFolder}
+        onToggleCommandPalette={() => setShowCommandPalette(true)}
+        onToggleSearch={() => setShowSearch(!showSearch)}
+      />
       <div className="main-container">
         <div className="sidebar">
-          <FileExplorer onFileOpen={handleFileOpen} />
+          <FileExplorer onFileOpen={handleFileOpen} onSaveFile={handleSaveFile} />
         </div>
         <div className="content">
           <EditorPanel
@@ -71,6 +123,11 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
+      <CommandPalette
+        isOpen={showCommandPalette}
+        onClose={() => setShowCommandPalette(false)}
+        commands={commands}
+      />
     </div>
   );
 };

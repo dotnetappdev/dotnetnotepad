@@ -13,12 +13,14 @@
 }
 
 .connection-section,
+.tables-section,
 .query-section,
 .results-section {
   margin-bottom: 20px;
 }
 
 .connection-section h3,
+.tables-section h3,
 .query-section h3,
 .results-section h3 {
   font-size: 13px;
@@ -26,6 +28,7 @@
   margin-bottom: 8px;
 }
 
+.db-type-select,
 .connection-input,
 .query-input {
   width: 100%;
@@ -38,8 +41,42 @@
   font-family: 'Consolas', 'Courier New', monospace;
 }
 
+.db-type-select {
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.db-type-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .connection-input {
   margin-bottom: 8px;
+}
+
+.tables-section {
+  background-color: #1e1e1e;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.tables-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.table-item {
+  padding: 6px 8px;
+  cursor: pointer;
+  color: #cccccc;
+  font-size: 12px;
+  border-radius: 2px;
+  margin-bottom: 2px;
+}
+
+.table-item:hover {
+  background-color: #2a2d2e;
 }
 
 .query-input {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SearchPanel from './SearchPanel';
 import './FileExplorer.css';
 
 interface FileNode {
@@ -8,12 +9,21 @@ interface FileNode {
   children?: FileNode[];
 }
 
-interface FileExplorerProps {
-  onFileOpen: (path: string, content: string, language: string) => void;
+interface ContextMenu {
+  x: number;
+  y: number;
+  node: FileNode;
 }
 
-const FileExplorer: React.FC<FileExplorerProps> = ({ onFileOpen }) => {
+interface FileExplorerProps {
+  onFileOpen: (path: string, content: string, language: string) => void;
+  onSaveFile?: (path: string, content: string) => void;
+}
+
+const FileExplorer: React.FC<FileExplorerProps> = ({ onFileOpen, onSaveFile }) => {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Sample file structure - in a real app, this would come from a file system API
   const [files] = useState<FileNode[]>([
@@ -54,6 +64,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileOpen }) => {
         { name: 'test.vb', type: 'file', path: '/scripts/test.vb' },
         { name: 'app.js', type: 'file', path: '/scripts/app.js' },
         { name: 'main.ts', type: 'file', path: '/scripts/main.ts' },
+        { name: 'algorithm.pseudo', type: 'file', path: '/scripts/algorithm.pseudo' },
       ]
     },
     { name: 'README.md', type: 'file', path: '/README.md' },
@@ -84,6 +95,8 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileOpen }) => {
       'html': 'html',
       'css': 'css',
       'md': 'markdown',
+      'pseudo': 'plaintext',
+      'txt': 'plaintext',
     };
     return languageMap[ext || ''] || 'plaintext';
   };
@@ -212,6 +225,34 @@ const newUser = userService.addUser({
     createdAt: new Date()
 });
 console.log('New user added:', newUser);`;
+    } else if (filename.endsWith('.pseudo')) {
+      return `ALGORITHM: Binary Search
+INPUT: sorted array A, target value T
+OUTPUT: index of T in A, or -1 if not found
+
+PROCEDURE BinarySearch(A, T):
+    left ← 0
+    right ← length(A) - 1
+    
+    WHILE left ≤ right DO
+        mid ← floor((left + right) / 2)
+        
+        IF A[mid] = T THEN
+            RETURN mid
+        ELSE IF A[mid] < T THEN
+            left ← mid + 1
+        ELSE
+            right ← mid - 1
+        END IF
+    END WHILE
+    
+    RETURN -1
+END PROCEDURE
+
+EXAMPLE:
+A = [1, 3, 5, 7, 9, 11]
+T = 7
+Result = BinarySearch(A, T) = 3`;
     }
     
     return `// Sample file: ${filename}\n// Add your code here`;
@@ -225,8 +266,54 @@ console.log('New user added:', newUser);`;
     }
   };
 
+  const handleContextMenu = (e: React.MouseEvent, node: FileNode) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      node,
+    });
+  };
+
+  const handleNewFile = (parentPath: string) => {
+    const fileName = prompt('Enter file name:');
+    if (fileName) {
+      const newPath = `${parentPath}/${fileName}`;
+      onFileOpen(newPath, '', getLanguage(fileName));
+    }
+    setContextMenu(null);
+  };
+
+  const handleDeleteFile = (path: string) => {
+    if (confirm(`Delete ${path}?`)) {
+      console.log('Delete file:', path);
+      // In a real app, this would delete the file
+    }
+    setContextMenu(null);
+  };
+
+  const filterNodes = (nodes: FileNode[], query: string): FileNode[] => {
+    if (!query) return nodes;
+    
+    return nodes.reduce((acc: FileNode[], node) => {
+      if (node.type === 'file' && node.name.toLowerCase().includes(query.toLowerCase())) {
+        acc.push(node);
+      } else if (node.type === 'folder' && node.children) {
+        const filteredChildren = filterNodes(node.children, query);
+        if (filteredChildren.length > 0 || node.name.toLowerCase().includes(query.toLowerCase())) {
+          acc.push({
+            ...node,
+            children: filteredChildren.length > 0 ? filteredChildren : node.children,
+          });
+        }
+      }
+      return acc;
+    }, []);
+  };
+
   const renderNode = (node: FileNode, level: number = 0): React.ReactNode => {
-    const isExpanded = expanded.has(node.path);
+    const isExpanded = expanded.has(node.path) || searchQuery !== '';
     const icon = node.type === 'folder' 
       ? (isExpanded ? '📂' : '📁')
       : '📄';
@@ -243,6 +330,7 @@ console.log('New user added:', newUser);`;
               handleFileClick(node);
             }
           }}
+          onContextMenu={(e) => handleContextMenu(e, node)}
         >
           <span className="icon">{icon}</span>
           <span className="name">{node.name}</span>
@@ -256,14 +344,39 @@ console.log('New user added:', newUser);`;
     );
   };
 
+  const filteredFiles = filterNodes(files, searchQuery);
+
   return (
     <div className="file-explorer">
       <div className="explorer-header">EXPLORER</div>
+      <SearchPanel onSearch={setSearchQuery} />
       <div className="file-tree">
-        {files.map(node => renderNode(node))}
+        {filteredFiles.map(node => renderNode(node))}
       </div>
+      {contextMenu && (
+        <div
+          className="context-menu"
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+          onClick={() => setContextMenu(null)}
+        >
+          <div className="context-menu-item" onClick={() => handleNewFile(contextMenu.node.path)}>
+            New File
+          </div>
+          <div className="context-menu-item" onClick={() => console.log('Copy')}>
+            Copy
+          </div>
+          <div className="context-menu-item" onClick={() => console.log('Paste')}>
+            Paste
+          </div>
+          <div className="context-menu-divider" />
+          <div className="context-menu-item" onClick={() => handleDeleteFile(contextMenu.node.path)}>
+            Delete
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
 
 export default FileExplorer;
