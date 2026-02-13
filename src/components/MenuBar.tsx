@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import './MenuBar.css';
 
+interface OpenFile {
+  path: string;
+  content: string;
+  language: string;
+  isUmlDiagram?: boolean;
+  isWhiteboard?: boolean;
+  isApiTester?: boolean;
+}
+
 interface MenuBarProps {
   onNewFile: () => void;
   onNewUmlDiagram: () => void;
@@ -13,6 +22,10 @@ interface MenuBarProps {
   onOpenFolder: () => void;
   onToggleCommandPalette: () => void;
   onToggleSearch: () => void;
+  onAbout: () => void;
+  openFiles: OpenFile[];
+  activeFile: string | null;
+  onSwitchFile: (path: string) => void;
 }
 
 const MenuBar: React.FC<MenuBarProps> = ({
@@ -27,8 +40,20 @@ const MenuBar: React.FC<MenuBarProps> = ({
   onOpenFolder,
   onToggleCommandPalette,
   onToggleSearch,
+  onAbout,
+  openFiles,
+  activeFile,
+  onSwitchFile,
 }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+
+  const getFileDisplayName = (file: OpenFile): string => {
+    const fileName = file.path.split('/').pop() || file.path;
+    if (file.isUmlDiagram) return `📊 ${fileName}`;
+    if (file.isWhiteboard) return `🎨 ${fileName}`;
+    if (file.isApiTester) return `🔌 ${fileName}`;
+    return `📄 ${fileName}`;
+  };
 
   const menus = {
     File: [
@@ -61,9 +86,17 @@ const MenuBar: React.FC<MenuBarProps> = ({
       { label: 'divider', action: () => {}, shortcut: '' },
       { label: 'Terminal', action: () => console.log('Terminal'), shortcut: 'Ctrl+`' },
     ],
+    Window: openFiles.length === 0 ? [
+      { label: 'No files open', action: () => {}, shortcut: '', disabled: true },
+    ] : openFiles.map((file, index) => ({
+      label: getFileDisplayName(file),
+      action: () => onSwitchFile(file.path),
+      shortcut: index < 9 ? `Ctrl+${index + 1}` : '',
+      isActive: file.path === activeFile,
+    })),
     Help: [
-      { label: 'Documentation', action: () => console.log('Docs'), shortcut: 'F1' },
-      { label: 'About', action: () => console.log('About'), shortcut: '' },
+      { label: 'Documentation', action: () => window.open('https://github.com/dotnetappdev/dotnetnotepad#readme', '_blank'), shortcut: 'F1' },
+      { label: 'About', action: onAbout, shortcut: '' },
     ],
   };
 
@@ -85,14 +118,14 @@ const MenuBar: React.FC<MenuBarProps> = ({
           </div>
           {activeMenu === menuName && (
             <div className="menu-dropdown">
-              {items.map((item, idx) =>
+              {items.map((item: any, idx) =>
                 item.label === 'divider' ? (
                   <div key={idx} className="menu-divider" />
                 ) : (
                   <div
                     key={idx}
-                    className="menu-dropdown-item"
-                    onClick={() => handleMenuClick(item.action)}
+                    className={`menu-dropdown-item ${item.isActive ? 'active' : ''} ${item.disabled ? 'disabled' : ''}`}
+                    onClick={() => !item.disabled && handleMenuClick(item.action)}
                   >
                     <span>{item.label}</span>
                     {item.shortcut && <span className="shortcut">{item.shortcut}</span>}
