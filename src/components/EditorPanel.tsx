@@ -18,6 +18,7 @@ interface EditorPanelProps {
   onFileSelect: (path: string) => void;
   onFileClose: (path: string) => void;
   onContentChange: (path: string, content: string) => void;
+  onExecute?: (code: string, language: string) => void;
 }
 
 const EditorPanel: React.FC<EditorPanelProps> = ({
@@ -26,8 +27,16 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
   onFileSelect,
   onFileClose,
   onContentChange,
+  onExecute,
 }) => {
   const editorRef = useRef<any>(null);
+
+  const handleExecute = () => {
+    const activeFileObj = openFiles.find(f => f.path === activeFile);
+    if (activeFileObj && onExecute) {
+      onExecute(activeFileObj.content, activeFileObj.language);
+    }
+  };
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
@@ -111,6 +120,11 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
             </button>
           </div>
         ))}
+        {activeFile && onExecute && (
+          <button className="execute-btn" onClick={handleExecute} title="Run code (F5)">
+            ▶ Execute
+          </button>
+        )}
       </div>
       <div className="editor-container">
         {activeFileObj ? (

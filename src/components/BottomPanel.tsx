@@ -3,8 +3,12 @@ import './BottomPanel.css';
 
 type TabType = 'terminal' | 'debug' | 'console';
 
-const BottomPanel: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('terminal');
+interface BottomPanelProps {
+  consoleOutput?: string[];
+}
+
+const BottomPanel: React.FC<BottomPanelProps> = ({ consoleOutput = [] }) => {
+  const [activeTab, setActiveTab] = useState<TabType>('console');
   const [terminalOutput, setTerminalOutput] = useState<string[]>([
     '> .NET Notepad Terminal',
     '> Type commands here...',
@@ -14,16 +18,18 @@ const BottomPanel: React.FC = () => {
     '[Debug] Application started',
     '[Debug] Waiting for debug session...',
   ]);
-  const [consoleOutput, setConsoleOutput] = useState<string[]>([
-    'Console Output',
-    'Application initialized',
-  ]);
   const [command, setCommand] = useState('');
   const terminalEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [terminalOutput, debugOutput, consoleOutput]);
+
+  useEffect(() => {
+    if (consoleOutput.length > 0) {
+      setActiveTab('console');
+    }
+  }, [consoleOutput]);
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,10 +73,6 @@ const BottomPanel: React.FC = () => {
 
   const addDebugMessage = (message: string) => {
     setDebugOutput([...debugOutput, `[${new Date().toLocaleTimeString()}] ${message}`]);
-  };
-
-  const addConsoleMessage = (message: string) => {
-    setConsoleOutput([...consoleOutput, message]);
   };
 
   const renderContent = () => {
@@ -120,18 +122,19 @@ const BottomPanel: React.FC = () => {
         return (
           <div className="console-content">
             <div className="output">
-              {consoleOutput.map((line, index) => (
-                <div key={index} className="output-line">
-                  {line}
-                </div>
-              ))}
+              {consoleOutput.length > 0 ? (
+                consoleOutput.map((line, index) => (
+                  <div key={index} className="output-line">
+                    {line}
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="output-line">Console Output</div>
+                  <div className="output-line">Ready to execute code...</div>
+                </>
+              )}
               <div ref={terminalEndRef} />
-            </div>
-            <div className="console-controls">
-              <button onClick={() => addConsoleMessage('Hello from Console!')}>
-                Add Console Log
-              </button>
-              <button onClick={() => setConsoleOutput([])}>Clear</button>
             </div>
           </div>
         );

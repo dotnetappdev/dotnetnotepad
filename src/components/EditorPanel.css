@@ -11,6 +11,7 @@
   border-bottom: 1px solid #3c3c3c;
   overflow-x: auto;
   white-space: nowrap;
+  align-items: center;
 }
 
 .tab {
@@ -37,6 +38,25 @@
 
 .tab-name {
   margin-right: 8px;
+}
+
+.execute-btn {
+  margin-left: auto;
+  padding: 4px 12px;
+  background-color: #16825d;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 8px;
+}
+
+.execute-btn:hover {
+  background-color: #1e9e6d;
 }
 
 .close-btn {

@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [workspaceFolder, setWorkspaceFolder] = useState('/workspace');
+  const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -30,6 +31,10 @@ const App: React.FC = () => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         handleSaveFile();
+      }
+      if (e.key === 'F5') {
+        e.preventDefault();
+        handleExecuteCode();
       }
     };
 
@@ -84,12 +89,72 @@ const App: React.FC = () => {
     }
   };
 
+  const handleExecuteCode = () => {
+    const file = openFiles.find(f => f.path === activeFile);
+    if (file) {
+      handleExecute(file.content, file.language);
+    }
+  };
+
+  const handleExecute = (code: string, language: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    setConsoleOutput(prev => [
+      ...prev,
+      `\n[${timestamp}] Executing ${language} code...`,
+    ]);
+
+    // Simulate code execution
+    if (language === 'csharp') {
+      // Simulate .NET code execution
+      setConsoleOutput(prev => [
+        ...prev,
+        'Compiling C# code...',
+        'Build succeeded.',
+        'Running application...',
+        '',
+        '--- Output ---',
+        'Hello from .NET!',
+        'Application completed successfully.',
+        `Execution time: ${Math.random() * 100 | 0}ms`,
+      ]);
+    } else if (language === 'sql') {
+      // Simulate SQL execution
+      setConsoleOutput(prev => [
+        ...prev,
+        'Executing SQL query...',
+        '3 row(s) affected',
+        'Query completed successfully.',
+      ]);
+    } else if (language === 'python') {
+      setConsoleOutput(prev => [
+        ...prev,
+        '--- Output ---',
+        'Hello from Python!',
+        'Execution completed.',
+      ]);
+    } else if (language === 'javascript') {
+      setConsoleOutput(prev => [
+        ...prev,
+        '--- Output ---',
+        'Hello from JavaScript!',
+        'Execution completed.',
+      ]);
+    } else {
+      setConsoleOutput(prev => [
+        ...prev,
+        `Language ${language} execution not yet implemented.`,
+        'Code would be executed here...',
+      ]);
+    }
+  };
+
   const commands = [
     { id: 'new-file', label: 'New File', action: handleNewFile, category: 'File' },
     { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
     { id: 'open-folder', label: 'Open Folder', action: handleOpenFolder, category: 'File' },
     { id: 'toggle-database', label: 'Toggle Database Panel', action: () => setShowDatabase(!showDatabase), category: 'View' },
     { id: 'close-file', label: 'Close File', action: () => activeFile && handleFileClose(activeFile), category: 'File' },
+    { id: 'execute-code', label: 'Execute Code', action: handleExecuteCode, category: 'Run' },
   ];
 
   const activeFileObj = openFiles.find(f => f.path === activeFile);
@@ -114,8 +179,9 @@ const App: React.FC = () => {
             onFileSelect={setActiveFile}
             onFileClose={handleFileClose}
             onContentChange={handleContentChange}
+            onExecute={handleExecute}
           />
-          <BottomPanel />
+          <BottomPanel consoleOutput={consoleOutput} />
         </div>
         {showDatabase && (
           <div className="database-panel">
