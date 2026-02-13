@@ -441,7 +441,7 @@ Result = BinarySearch(A, T) = 3`;
               <span className="workspace-icon">
                 {files.every(f => f.type === 'file' || expanded.has(f.path)) ? '▼' : '▶'}
               </span>
-              <span className="workspace-name">{folderPath.split('/').pop() || 'WORKSPACE'}</span>
+              <span className="workspace-name">{folderPath.split(/[/\\]/).filter(Boolean).pop() || 'WORKSPACE'}</span>
             </div>
             <div className="file-tree">
               {filteredFiles.map(node => renderNode(node))}

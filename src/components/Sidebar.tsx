@@ -42,7 +42,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onFileOpen, onSaveFile }) => {
         {activeTab === 'search' && (
           <div className="search-view">
             <div className="explorer-header">SEARCH</div>
-            <SearchPanel onSearch={(query) => console.log('Search:', query)} />
+            <SearchPanel onSearch={(query) => {
+              // TODO: Implement actual search functionality across workspace files
+              console.log('Search:', query);
+            }} />
             <div className="search-results">
               <p className="search-placeholder">Search files in your workspace...</p>
             </div>
