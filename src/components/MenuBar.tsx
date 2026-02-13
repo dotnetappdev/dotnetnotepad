@@ -13,6 +13,7 @@ interface MenuBarProps {
   onOpenFolder: () => void;
   onToggleCommandPalette: () => void;
   onToggleSearch: () => void;
+  onAbout: () => void;
 }
 
 const MenuBar: React.FC<MenuBarProps> = ({
@@ -27,6 +28,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
   onOpenFolder,
   onToggleCommandPalette,
   onToggleSearch,
+  onAbout,
 }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
@@ -62,8 +64,8 @@ const MenuBar: React.FC<MenuBarProps> = ({
       { label: 'Terminal', action: () => console.log('Terminal'), shortcut: 'Ctrl+`' },
     ],
     Help: [
-      { label: 'Documentation', action: () => console.log('Docs'), shortcut: 'F1' },
-      { label: 'About', action: () => console.log('About'), shortcut: '' },
+      { label: 'Documentation', action: () => window.open('https://github.com/dotnetappdev/dotnetnotepad#readme', '_blank'), shortcut: 'F1' },
+      { label: 'About', action: onAbout, shortcut: '' },
     ],
   };
 

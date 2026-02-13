@@ -9,6 +9,7 @@ import UmlDiagramDesigner from './components/UmlDiagramDesigner';
 import WhiteboardDesigner from './components/WhiteboardDesigner';
 import ApiTester from './components/ApiTester';
 import ProjectTemplateDialog, { ProjectTemplate } from './components/ProjectTemplateDialog';
+import AboutDialog from './components/AboutDialog';
 import './App.css';
 
 interface OpenFile {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showProjectTemplateDialog, setShowProjectTemplateDialog] = useState(false);
+  const [showAboutDialog, setShowAboutDialog] = useState(false);
   const [workspaceFolder, setWorkspaceFolder] = useState('/workspace');
   const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
   const [queryResults, setQueryResults] = useState<QueryResult | null>(null);
@@ -772,6 +774,7 @@ console.log('\\nExecution completed.');`;
         onOpenFolder={handleOpenFolder}
         onToggleCommandPalette={() => setShowCommandPalette(true)}
         onToggleSearch={() => setShowSearch(!showSearch)}
+        onAbout={() => setShowAboutDialog(true)}
       />
       <div className="main-container">
         <Sidebar onFileOpen={handleFileOpen} onSaveFile={handleSaveFile} />
@@ -821,6 +824,10 @@ console.log('\\nExecution completed.');`;
         isOpen={showProjectTemplateDialog}
         onClose={() => setShowProjectTemplateDialog(false)}
         onCreateProject={handleCreateProjectFromTemplate}
+      />
+      <AboutDialog
+        isOpen={showAboutDialog}
+        onClose={() => setShowAboutDialog(false)}
       />
     </div>
   );
