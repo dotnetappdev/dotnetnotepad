@@ -1,0 +1,152 @@
+.database-panel {
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.db-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #cccccc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.connection-section,
+.query-section,
+.results-section {
+  margin-bottom: 20px;
+}
+
+.connection-section h3,
+.query-section h3,
+.results-section h3 {
+  font-size: 13px;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.connection-input,
+.query-input {
+  width: 100%;
+  padding: 8px;
+  background-color: #3c3c3c;
+  border: 1px solid #555555;
+  color: #cccccc;
+  font-size: 12px;
+  border-radius: 2px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.connection-input {
+  margin-bottom: 8px;
+}
+
+.query-input {
+  resize: vertical;
+  margin-bottom: 8px;
+}
+
+.connect-btn,
+.disconnect-btn,
+.execute-btn,
+.ef-btn {
+  padding: 6px 12px;
+  background-color: #0e639c;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.connect-btn:hover,
+.disconnect-btn:hover,
+.execute-btn:hover,
+.ef-btn:hover {
+  background-color: #1177bb;
+}
+
+.disconnect-btn {
+  background-color: #a1260d;
+}
+
+.disconnect-btn:hover {
+  background-color: #c72e0d;
+}
+
+.ef-btn {
+  background-color: #5a5a5a;
+}
+
+.ef-btn:hover {
+  background-color: #6e6e6e;
+}
+
+.connected-status {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: #1e3a1e;
+  border-radius: 2px;
+  margin-bottom: 8px;
+}
+
+.status-icon {
+  color: #4ec9b0;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.query-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.error-message {
+  padding: 8px;
+  background-color: #5a1d1d;
+  border-left: 3px solid #f14c4c;
+  color: #f48771;
+  font-size: 12px;
+  margin-bottom: 12px;
+  border-radius: 2px;
+}
+
+.results-table {
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+
+.results-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background-color: #1e1e1e;
+}
+
+.results-table th {
+  background-color: #3c3c3c;
+  padding: 8px;
+  text-align: left;
+  color: #ffffff;
+  border: 1px solid #555555;
+  font-weight: 600;
+}
+
+.results-table td {
+  padding: 6px 8px;
+  border: 1px solid #555555;
+  color: #cccccc;
+}
+
+.results-table tr:hover {
+  background-color: #2a2d2e;
+}
+
+.results-info {
+  font-size: 11px;
+  color: #969696;
+  font-style: italic;
+}
