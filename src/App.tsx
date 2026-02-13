@@ -123,6 +123,178 @@ const App: React.FC = () => {
     }
   };
 
+  const handleNewDotnetConsole = () => {
+    const projectName = prompt('Enter project name:', 'ConsoleApp');
+    if (projectName) {
+      const programCs = `using System;
+
+namespace ${projectName}
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Welcome to .NET Console Application");
+            
+            // Your code here
+            
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
+    }
+}`;
+
+      const csproj = `<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>${projectName}</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>`;
+
+      // Create project files
+      const projectFolder = `${workspaceFolder}/${projectName}`;
+      handleFileOpen(`${projectFolder}/Program.cs`, programCs, 'csharp');
+      handleFileOpen(`${projectFolder}/${projectName}.csproj`, csproj, 'xml');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\n.NET Console Application '${projectName}' created successfully!`,
+        `Files: Program.cs, ${projectName}.csproj`,
+      ]);
+    }
+  };
+
+  const handleNewDotnetWebApi = () => {
+    const projectName = prompt('Enter project name:', 'WebApiApp');
+    if (projectName) {
+      const programCs = `using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();`;
+
+      const weatherController = `using Microsoft.AspNetCore.Mvc;
+
+namespace ${projectName}.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class WeatherForecastController : ControllerBase
+    {
+        private static readonly string[] Summaries = new[]
+        {
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+
+        [HttpGet]
+        public IEnumerable<WeatherForecast> Get()
+        {
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<WeatherForecast> GetById(int id)
+        {
+            var forecast = new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(id)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            };
+            
+            return Ok(forecast);
+        }
+
+        [HttpPost]
+        public ActionResult<WeatherForecast> Create(WeatherForecast forecast)
+        {
+            return CreatedAtAction(nameof(GetById), new { id = 1 }, forecast);
+        }
+    }
+
+    public class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public string? Summary { get; set; }
+    }
+}`;
+
+      const csproj = `<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>${projectName}</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+</Project>`;
+
+      const appsettings = `{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}`;
+
+      // Create project files
+      const projectFolder = `${workspaceFolder}/${projectName}`;
+      handleFileOpen(`${projectFolder}/Program.cs`, programCs, 'csharp');
+      handleFileOpen(`${projectFolder}/Controllers/WeatherForecastController.cs`, weatherController, 'csharp');
+      handleFileOpen(`${projectFolder}/${projectName}.csproj`, csproj, 'xml');
+      handleFileOpen(`${projectFolder}/appsettings.json`, appsettings, 'json');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\n.NET Web API Application '${projectName}' created successfully!`,
+        `Files: Program.cs, WeatherForecastController.cs, ${projectName}.csproj, appsettings.json`,
+        `API includes: Swagger UI, CRUD endpoints`,
+      ]);
+    }
+  };
+
   const handleSaveFile = () => {
     if (activeFile) {
       const file = openFiles.find(f => f.path === activeFile);
@@ -219,6 +391,8 @@ const App: React.FC = () => {
     { id: 'new-file', label: 'New File', action: handleNewFile, category: 'File' },
     { id: 'new-code-file', label: 'New Code File', action: handleNewCodeFile, category: 'File' },
     { id: 'new-uml-diagram', label: 'New UML Diagram', action: handleNewUmlDiagram, category: 'File' },
+    { id: 'new-dotnet-console', label: 'New .NET Console App', action: handleNewDotnetConsole, category: 'File' },
+    { id: 'new-dotnet-webapi', label: 'New .NET Web API', action: handleNewDotnetWebApi, category: 'File' },
     { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
     { id: 'open-folder', label: 'Open Folder', action: handleOpenFolder, category: 'File' },
     { id: 'toggle-database', label: 'Toggle Database Panel', action: () => setShowDatabase(!showDatabase), category: 'View' },
@@ -234,6 +408,8 @@ const App: React.FC = () => {
         onNewFile={handleNewFile}
         onNewCodeFile={handleNewCodeFile}
         onNewUmlDiagram={handleNewUmlDiagram}
+        onNewDotnetConsole={handleNewDotnetConsole}
+        onNewDotnetWebApi={handleNewDotnetWebApi}
         onSaveFile={handleSaveFile}
         onOpenFolder={handleOpenFolder}
         onToggleCommandPalette={() => setShowCommandPalette(true)}
