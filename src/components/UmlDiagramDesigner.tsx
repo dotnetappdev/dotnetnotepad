@@ -40,6 +40,12 @@ const UmlDiagramDesigner: React.FC<UmlDiagramDesignerProps> = ({ initialData, on
   const [showTableEditor, setShowTableEditor] = useState(false);
   const [editingTable, setEditingTable] = useState<Table | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const idCounterRef = useRef(0);
+
+  const generateId = (prefix: string): string => {
+    idCounterRef.current += 1;
+    return `${prefix}_${Date.now()}_${idCounterRef.current}`;
+  };
 
   const onChangeRef = useRef(onChange);
   
@@ -74,13 +80,13 @@ const UmlDiagramDesigner: React.FC<UmlDiagramDesignerProps> = ({ initialData, on
 
   const handleAddTable = () => {
     const newTable: Table = {
-      id: `table_${Date.now()}`,
+      id: generateId('table'),
       name: 'NewTable',
       x: 100,
       y: 100,
       columns: [
         {
-          id: `col_${Date.now()}`,
+          id: generateId('col'),
           name: 'Id',
           type: 'int',
           isPrimaryKey: true,
@@ -163,7 +169,7 @@ const UmlDiagramDesigner: React.FC<UmlDiagramDesignerProps> = ({ initialData, on
         
         if (refTable && refColumn) {
           newRelationships.push({
-            id: `rel_${Date.now()}_${col.id}`,
+            id: generateId('rel'),
             fromTableId: table.id,
             fromColumnId: col.id,
             toTableId: refTable.id,
@@ -189,7 +195,7 @@ const UmlDiagramDesigner: React.FC<UmlDiagramDesignerProps> = ({ initialData, on
   const handleAddColumn = () => {
     if (editingTable) {
       const newColumn: Column = {
-        id: `col_${Date.now()}`,
+        id: generateId('col'),
         name: 'NewColumn',
         type: 'varchar(50)',
         isPrimaryKey: false,

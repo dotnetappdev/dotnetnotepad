@@ -399,9 +399,6 @@ Result = BinarySearch(A, T) = 3`;
           <div className="context-menu-item" onClick={() => handleNewFolder(contextMenu.node.path)}>
             New Folder
           </div>
-          <div className="context-menu-item" onClick={() => handleNewFolder(contextMenu.node.path)}>
-            New Directory
-          </div>
           <div className="context-menu-divider" />
           <div className="context-menu-item" onClick={() => handleRename(contextMenu.node)}>
             Rename
