@@ -1,6 +1,6 @@
 {
   "name": "dotnetnotepad",
-  "version": "1.0.0.1",
+  "version": "1.0.0",
   "description": "A comprehensive TypeScript-based .NET notepad application with VS Code-like features",
   "main": "electron.js",
   "scripts": {
