@@ -97,6 +97,7 @@
   font-size: 12px;
   gap: 6px;
   border-bottom: 1px solid #3e3e42;
+  position: relative;
 }
 
 .table-column:last-child {
@@ -104,7 +105,9 @@
 }
 
 .pk-icon,
-.fk-icon {
+.fk-icon,
+.auto-icon,
+.guid-icon {
   font-size: 14px;
   flex-shrink: 0;
 }
@@ -116,6 +119,60 @@
 .fk-icon {
   color: #4CAF50;
 }
+
+.auto-icon {
+  color: #2196F3;
+}
+
+.guid-icon {
+  color: #9C27B0;
+}
+
+.column-delete-btn {
+  opacity: 0;
+  padding: 2px 6px;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 3px;
+  margin-left: auto;
+  transition: all 0.2s;
+}
+
+.table-column:hover .column-delete-btn {
+  opacity: 1;
+}
+
+.column-delete-btn:hover {
+  background: #c94c4c;
+  color: white;
+}
+
+.context-menu {
+  position: fixed;
+  background: #2d2d30;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 4px 0;
+  min-width: 180px;
+  z-index: 2000;
+}
+
+.context-menu-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #d4d4d4;
+  transition: background 0.2s;
+}
+
+.context-menu-item:hover {
+  background: #3e3e42;
+}
+
 
 .column-name {
   flex: 1;

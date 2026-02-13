@@ -6,6 +6,7 @@ import EditorPanel from './components/EditorPanel';
 import BottomPanel from './components/BottomPanel';
 import DatabasePanel from './components/DatabasePanel';
 import UmlDiagramDesigner from './components/UmlDiagramDesigner';
+import WhiteboardDesigner from './components/WhiteboardDesigner';
 import './App.css';
 
 interface OpenFile {
@@ -13,6 +14,7 @@ interface OpenFile {
   content: string;
   language: string;
   isUmlDiagram?: boolean;
+  isWhiteboard?: boolean;
 }
 
 interface QueryResult {
@@ -117,6 +119,22 @@ const App: React.FC = () => {
         content: initialData,
         language: 'json',
         isUmlDiagram: true,
+      };
+      setOpenFiles([...openFiles, newFile]);
+      setActiveFile(newFile.path);
+    }
+  };
+
+  const handleNewWhiteboard = () => {
+    const fileName = prompt('Enter whiteboard name:', 'whiteboard');
+    if (fileName) {
+      const fullFileName = fileName.endsWith('.whiteboard') ? fileName : `${fileName}.whiteboard`;
+      const initialData = JSON.stringify({ elements: [] }, null, 2);
+      const newFile: OpenFile = {
+        path: `${workspaceFolder}/${fullFileName}`,
+        content: initialData,
+        language: 'json',
+        isWhiteboard: true,
       };
       setOpenFiles([...openFiles, newFile]);
       setActiveFile(newFile.path);
@@ -391,6 +409,7 @@ namespace ${projectName}.Controllers
     { id: 'new-file', label: 'New File', action: handleNewFile, category: 'File' },
     { id: 'new-code-file', label: 'New Code File', action: handleNewCodeFile, category: 'File' },
     { id: 'new-uml-diagram', label: 'New UML Diagram', action: handleNewUmlDiagram, category: 'File' },
+    { id: 'new-whiteboard', label: 'New Whiteboard', action: handleNewWhiteboard, category: 'File' },
     { id: 'new-dotnet-console', label: 'New .NET Console App', action: handleNewDotnetConsole, category: 'File' },
     { id: 'new-dotnet-webapi', label: 'New .NET Web API', action: handleNewDotnetWebApi, category: 'File' },
     { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
@@ -408,6 +427,7 @@ namespace ${projectName}.Controllers
         onNewFile={handleNewFile}
         onNewCodeFile={handleNewCodeFile}
         onNewUmlDiagram={handleNewUmlDiagram}
+        onNewWhiteboard={handleNewWhiteboard}
         onNewDotnetConsole={handleNewDotnetConsole}
         onNewDotnetWebApi={handleNewDotnetWebApi}
         onSaveFile={handleSaveFile}
@@ -422,6 +442,11 @@ namespace ${projectName}.Controllers
         <div className="content">
           {activeFileObj?.isUmlDiagram ? (
             <UmlDiagramDesigner
+              initialData={activeFileObj.content}
+              onChange={(data) => handleContentChange(activeFileObj.path, data)}
+            />
+          ) : activeFileObj?.isWhiteboard ? (
+            <WhiteboardDesigner
               initialData={activeFileObj.content}
               onChange={(data) => handleContentChange(activeFileObj.path, data)}
             />
