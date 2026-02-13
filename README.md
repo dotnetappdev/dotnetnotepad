@@ -291,8 +291,17 @@ A comprehensive TypeScript-based .NET notepad application with VS Code-like feat
 **Main Interface with Menu System**
 ![Main UI](https://github.com/user-attachments/assets/902cc816-7a2e-440d-957b-6f55c545c35c)
 
-**Command Palette**
-![Command Palette](https://github.com/user-attachments/assets/b13e9de0-b9a3-43a3-887a-de5b50ecb01c)
+**Command Palette - All Available Commands**
+![Command Palette](https://github.com/user-attachments/assets/f7e78477-3ab4-42d2-9788-833e78555eb0)
+
+**UML Diagram Designer - Visual Database Schema**
+![UML Designer](https://github.com/user-attachments/assets/4c93eaf7-6d9f-4b93-8927-022af9c9afdc)
+
+**Whiteboard Designer - Freeform Drawing Canvas**
+![Whiteboard](https://github.com/user-attachments/assets/43ee38a3-55f8-44b8-9a54-f65f5df808f4)
+
+**API Tester - REST API Testing Tool**
+![API Tester](https://github.com/user-attachments/assets/f71bda5d-22e0-4467-add8-6243e02b5396)
 
 **Code Execution with Console Output**
 ![Execute Code](https://github.com/user-attachments/assets/8c2d6bbb-c098-462a-b593-cd12a6f68e44)
