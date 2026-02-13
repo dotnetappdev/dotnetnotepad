@@ -2,6 +2,16 @@
 
 A comprehensive TypeScript-based .NET notepad application with VS Code-like features, Monaco Editor, database connectivity, code execution, and multi-language support.
 
+## 🌍 Platform Support
+
+**Available on all major platforms:**
+- 🪟 **Windows** - NSIS Installer and Portable EXE
+- 🐧 **Linux** - AppImage (universal) and DEB packages
+- 🍎 **macOS** - DMG disk image
+- 🌐 **Web** - Run in any modern browser
+
+All builds are automatically generated via GitHub Actions on every release.
+
 ## ✨ Key Features
 
 ### 🎨 Monaco Editor Integration
@@ -396,10 +406,66 @@ npm start
 Application opens at `http://localhost:3000`
 
 ### Production Build
+
+#### Web Version
 ```bash
 npm run build
 ```
 Creates optimized bundle in `dist/` directory
+
+#### Desktop Applications
+
+Build for all platforms:
+```bash
+npm run dist
+```
+
+Build for specific platforms:
+```bash
+# Windows (exe and portable)
+npm run dist:win
+
+# Linux (AppImage and deb)
+npm run dist:linux
+
+# macOS (dmg)
+npm run dist:mac
+```
+
+Built applications will be in the `release/` directory.
+
+## 🚀 Automated Builds and Releases
+
+This project includes automated builds for all major platforms via GitHub Actions.
+
+### Creating a Release
+
+1. **Tag your release:**
+   ```bash
+   git tag v1.0.0.1
+   git push origin v1.0.0.1
+   ```
+
+2. **GitHub Actions will automatically:**
+   - Build the web version (ZIP file)
+   - Build Windows executables (NSIS installer and portable exe)
+   - Build Linux packages (AppImage and DEB)
+   - Build macOS disk image (DMG)
+   - Create a GitHub release with all binaries attached
+
+3. **Manual trigger:**
+   You can also trigger builds manually from the Actions tab in GitHub.
+
+### Available Downloads
+
+After a release is created, users can download:
+- **Web Version**: `dotnetnotepad-web.zip` - Extract and host anywhere
+- **Windows**: `.NET Notepad Setup.exe` - Full installer
+- **Windows Portable**: `.NET Notepad.exe` - No installation required
+- **Linux AppImage**: `.NET Notepad.AppImage` - Universal Linux binary
+- **Linux DEB**: `dotnetnotepad_*.deb` - For Debian/Ubuntu
+- **macOS**: `.NET Notepad.dmg` - Disk image for Mac
+
 
 ## ⌨️ Keyboard Shortcuts
 
