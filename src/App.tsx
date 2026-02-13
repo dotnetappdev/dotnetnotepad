@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MenuBar from './components/MenuBar';
 import CommandPalette from './components/CommandPalette';
-import FileExplorer from './components/FileExplorer';
+import Sidebar from './components/Sidebar';
 import EditorPanel from './components/EditorPanel';
 import BottomPanel from './components/BottomPanel';
 import DatabasePanel from './components/DatabasePanel';
@@ -465,9 +465,7 @@ namespace ${projectName}.Controllers
         onToggleSearch={() => setShowSearch(!showSearch)}
       />
       <div className="main-container">
-        <div className="sidebar">
-          <FileExplorer onFileOpen={handleFileOpen} onSaveFile={handleSaveFile} />
-        </div>
+        <Sidebar onFileOpen={handleFileOpen} onSaveFile={handleSaveFile} />
         <div className="content">
           {activeFileObj?.isUmlDiagram ? (
             <UmlDiagramDesigner
