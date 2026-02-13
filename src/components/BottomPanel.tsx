@@ -1,14 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './BottomPanel.css';
 
-type TabType = 'terminal' | 'debug' | 'console';
+type TabType = 'terminal' | 'debug' | 'console' | 'results';
+
+interface QueryResult {
+  columns: string[];
+  rows: any[][];
+}
 
 interface BottomPanelProps {
   consoleOutput?: string[];
+  queryResults?: QueryResult | null;
 }
 
-const BottomPanel: React.FC<BottomPanelProps> = ({ consoleOutput = [] }) => {
+const BottomPanel: React.FC<BottomPanelProps> = ({ consoleOutput = [], queryResults = null }) => {
   const [activeTab, setActiveTab] = useState<TabType>('console');
+  const [viewMode, setViewMode] = useState<'grid' | 'text'>('grid');
   const [terminalOutput, setTerminalOutput] = useState<string[]>([
     '> .NET Notepad Terminal',
     '> Type commands here...',
@@ -30,6 +37,12 @@ const BottomPanel: React.FC<BottomPanelProps> = ({ consoleOutput = [] }) => {
       setActiveTab('console');
     }
   }, [consoleOutput]);
+
+  useEffect(() => {
+    if (queryResults) {
+      setActiveTab('results');
+    }
+  }, [queryResults]);
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,6 +151,66 @@ const BottomPanel: React.FC<BottomPanelProps> = ({ consoleOutput = [] }) => {
             </div>
           </div>
         );
+      case 'results':
+        return (
+          <div className="results-content">
+            <div className="results-toolbar">
+              <button 
+                className={`view-mode-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                onClick={() => setViewMode('grid')}
+              >
+                Grid
+              </button>
+              <button 
+                className={`view-mode-btn ${viewMode === 'text' ? 'active' : ''}`}
+                onClick={() => setViewMode('text')}
+              >
+                Text
+              </button>
+            </div>
+            {queryResults ? (
+              viewMode === 'grid' ? (
+                <div className="grid-view">
+                  <table className="results-table">
+                    <thead>
+                      <tr>
+                        {queryResults.columns.map((col, idx) => (
+                          <th key={idx}>{col}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {queryResults.rows.map((row, rowIdx) => (
+                        <tr key={rowIdx}>
+                          {row.map((cell, cellIdx) => (
+                            <td key={cellIdx}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="results-footer">
+                    {queryResults.rows.length} row(s) returned
+                  </div>
+                </div>
+              ) : (
+                <div className="text-view">
+                  <pre>
+                    {queryResults.columns.join('\t')}{'\n'}
+                    {queryResults.columns.map(() => '---------').join('\t')}{'\n'}
+                    {queryResults.rows.map(row => row.join('\t')).join('\n')}
+                    {'\n\n'}({queryResults.rows.length} row(s) affected)
+                  </pre>
+                </div>
+              )
+            ) : (
+              <div className="no-results">
+                <p>No query results to display</p>
+                <p>Execute a SQL query to see results here</p>
+              </div>
+            )}
+          </div>
+        );
     }
   };
 
@@ -161,6 +234,12 @@ const BottomPanel: React.FC<BottomPanelProps> = ({ consoleOutput = [] }) => {
           onClick={() => setActiveTab('console')}
         >
           Console
+        </div>
+        <div
+          className={`panel-tab ${activeTab === 'results' ? 'active' : ''}`}
+          onClick={() => setActiveTab('results')}
+        >
+          Results {queryResults && `(${queryResults.rows.length})`}
         </div>
       </div>
       <div className="panel-content">{renderContent()}</div>

@@ -13,6 +13,11 @@ interface OpenFile {
   language: string;
 }
 
+interface QueryResult {
+  columns: string[];
+  rows: any[][];
+}
+
 const App: React.FC = () => {
   const [openFiles, setOpenFiles] = useState<OpenFile[]>([]);
   const [activeFile, setActiveFile] = useState<string | null>(null);
@@ -21,6 +26,7 @@ const App: React.FC = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [workspaceFolder, setWorkspaceFolder] = useState('/workspace');
   const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
+  const [queryResults, setQueryResults] = useState<QueryResult | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -118,7 +124,22 @@ const App: React.FC = () => {
         `Execution time: ${Math.floor(Math.random() * 100)}ms`,
       ]);
     } else if (language === 'sql') {
-      // Simulate SQL execution
+      // Simulate SQL execution and show results in Results tab
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const twoDaysAgo = new Date(today);
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      
+      setQueryResults({
+        columns: ['Id', 'Name', 'Email', 'CreatedDate'],
+        rows: [
+          [1, 'John Doe', 'john@example.com', twoDaysAgo.toISOString().split('T')[0]],
+          [2, 'Jane Smith', 'jane@example.com', yesterday.toISOString().split('T')[0]],
+          [3, 'Bob Johnson', 'bob@example.com', today.toISOString().split('T')[0]],
+        ],
+      });
+      
       setConsoleOutput(prev => [
         ...prev,
         'Executing SQL query...',
@@ -181,7 +202,10 @@ const App: React.FC = () => {
             onContentChange={handleContentChange}
             onExecute={handleExecute}
           />
-          <BottomPanel consoleOutput={consoleOutput} />
+          <BottomPanel 
+            consoleOutput={consoleOutput} 
+            queryResults={queryResults}
+          />
         </div>
         {showDatabase && (
           <div className="database-panel">

@@ -53,44 +53,162 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
 
     // Configure C# language features
     monaco.languages.registerCompletionItemProvider('csharp', {
+      triggerCharacters: ['.'],
       provideCompletionItems: (model: any, position: any) => {
-        const suggestions = [
-          {
-            label: 'Console.WriteLine',
-            kind: monaco.languages.CompletionItemKind.Method,
-            insertText: 'Console.WriteLine($1);',
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Writes a line to the console'
-          },
-          {
-            label: 'public class',
-            kind: monaco.languages.CompletionItemKind.Snippet,
-            insertText: 'public class ${1:ClassName}\n{\n\t$0\n}',
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Create a public class'
-          },
-          {
-            label: 'using',
-            kind: monaco.languages.CompletionItemKind.Keyword,
-            insertText: 'using ${1:System};',
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Add a using directive'
-          },
-          {
-            label: 'async Task',
-            kind: monaco.languages.CompletionItemKind.Snippet,
-            insertText: 'public async Task ${1:MethodName}()\n{\n\t$0\n}',
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Create an async method'
-          },
-          {
-            label: 'IEnumerable',
-            kind: monaco.languages.CompletionItemKind.Interface,
-            insertText: 'IEnumerable<${1:T}>',
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Generic enumerable interface'
-          },
-        ];
+        const textUntilPosition = model.getValueInRange({
+          startLineNumber: position.lineNumber,
+          startColumn: 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        });
+
+        const suggestions = [];
+
+        // Check if we're after a dot (member access)
+        if (textUntilPosition.endsWith('.')) {
+          const beforeDot = textUntilPosition.slice(0, -1).trim().split(/\s+/).pop();
+          
+          // Console members
+          if (beforeDot === 'Console') {
+            suggestions.push(
+              {
+                label: 'WriteLine',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'WriteLine($1)',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: 'Writes a line to the console',
+                detail: 'void Console.WriteLine(string value)'
+              },
+              {
+                label: 'Write',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'Write($1)',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: 'Writes to the console without a newline',
+                detail: 'void Console.Write(string value)'
+              },
+              {
+                label: 'ReadLine',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'ReadLine()',
+                documentation: 'Reads a line from the console',
+                detail: 'string Console.ReadLine()'
+              }
+            );
+          }
+          
+          // LINQ methods for collections
+          if (textUntilPosition.match(/\w+\./)) {
+            suggestions.push(
+              {
+                label: 'Where',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'Where(x => ${1:x.Property} == ${2:value})',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: 'Filters a sequence based on a predicate',
+                detail: 'IEnumerable<T> Where(Func<T, bool> predicate)'
+              },
+              {
+                label: 'Select',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'Select(x => ${1:x.Property})',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: 'Projects each element into a new form',
+                detail: 'IEnumerable<TResult> Select(Func<T, TResult> selector)'
+              },
+              {
+                label: 'OrderBy',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'OrderBy(x => ${1:x.Property})',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: 'Sorts elements in ascending order',
+                detail: 'IOrderedEnumerable<T> OrderBy(Func<T, TKey> keySelector)'
+              },
+              {
+                label: 'First',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'First()',
+                documentation: 'Returns the first element',
+                detail: 'T First()'
+              },
+              {
+                label: 'FirstOrDefault',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'FirstOrDefault()',
+                documentation: 'Returns the first element or default',
+                detail: 'T FirstOrDefault()'
+              },
+              {
+                label: 'ToList',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'ToList()',
+                documentation: 'Converts to List<T>',
+                detail: 'List<T> ToList()'
+              },
+              {
+                label: 'ToArray',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'ToArray()',
+                documentation: 'Converts to T[]',
+                detail: 'T[] ToArray()'
+              },
+              {
+                label: 'Count',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'Count()',
+                documentation: 'Returns the number of elements',
+                detail: 'int Count()'
+              },
+              {
+                label: 'Any',
+                kind: monaco.languages.CompletionItemKind.Method,
+                insertText: 'Any(${1:x => x.Property == value})',
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                documentation: 'Determines if any elements satisfy a condition',
+                detail: 'bool Any(Func<T, bool> predicate)'
+              }
+            );
+          }
+        } else {
+          // General suggestions when not after a dot
+          suggestions.push(
+            {
+              label: 'Console.WriteLine',
+              kind: monaco.languages.CompletionItemKind.Method,
+              insertText: 'Console.WriteLine($1);',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Writes a line to the console'
+            },
+            {
+              label: 'public class',
+              kind: monaco.languages.CompletionItemKind.Snippet,
+              insertText: 'public class ${1:ClassName}\n{\n\t$0\n}',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Create a public class'
+            },
+            {
+              label: 'using',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'using ${1:System};',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Add a using directive'
+            },
+            {
+              label: 'async Task',
+              kind: monaco.languages.CompletionItemKind.Snippet,
+              insertText: 'public async Task ${1:MethodName}()\n{\n\t$0\n}',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Create an async method'
+            },
+            {
+              label: 'IEnumerable',
+              kind: monaco.languages.CompletionItemKind.Interface,
+              insertText: 'IEnumerable<${1:T}>',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Generic enumerable interface'
+            }
+          );
+        }
 
         return { suggestions };
       },
