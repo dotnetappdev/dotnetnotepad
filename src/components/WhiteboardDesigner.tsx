@@ -29,11 +29,16 @@ const WhiteboardDesigner: React.FC<WhiteboardDesignerProps> = ({ initialData, on
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const idCounter = useRef(0);
+  const onChangeRef = useRef(onChange);
 
   const generateId = (): string => {
     idCounter.current += 1;
     return `element_${Date.now()}_${idCounter.current}`;
   };
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     if (initialData) {
@@ -47,11 +52,11 @@ const WhiteboardDesigner: React.FC<WhiteboardDesignerProps> = ({ initialData, on
   }, [initialData]);
 
   useEffect(() => {
-    if (onChange) {
+    if (onChangeRef.current) {
       const data = JSON.stringify({ elements }, null, 2);
-      onChange(data);
+      onChangeRef.current(data);
     }
-  }, [elements, onChange]);
+  }, [elements]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     const rect = canvasRef.current?.getBoundingClientRect();
