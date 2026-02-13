@@ -289,43 +289,31 @@ A comprehensive TypeScript-based .NET notepad application with VS Code-like feat
 ## 📸 Screenshots
 
 **Main Interface with Menu System**
-![Main UI](https://github.com/user-attachments/assets/902cc816-7a2e-440d-957b-6f55c545c35c)
+![Main UI](https://github.com/user-attachments/assets/cbc2fa65-43cf-4fc6-b954-906810263ada)
 
-**Command Palette - All Available Commands**
-![Command Palette](https://github.com/user-attachments/assets/f7e78477-3ab4-42d2-9788-833e78555eb0)
+**File Explorer with Project Files**
+![File Explorer](https://github.com/user-attachments/assets/d2be5a61-a94a-4ddb-a464-140f6d03f570)
 
-**UML Diagram Designer - Visual Database Schema**
-![UML Designer](https://github.com/user-attachments/assets/4c93eaf7-6d9f-4b93-8927-022af9c9afdc)
-
-**Whiteboard Designer - Freeform Drawing Canvas**
-![Whiteboard](https://github.com/user-attachments/assets/43ee38a3-55f8-44b8-9a54-f65f5df808f4)
-
-**API Tester - REST API Testing Tool**
-![API Tester](https://github.com/user-attachments/assets/f71bda5d-22e0-4467-add8-6243e02b5396)
+**C# Editor with Syntax Highlighting**
+![C# Editor](https://github.com/user-attachments/assets/e08a4495-a4a0-4ac5-90d1-dc1b462df42e)
 
 **Code Execution with Console Output**
-![Execute Code](https://github.com/user-attachments/assets/8c2d6bbb-c098-462a-b593-cd12a6f68e44)
+![Execute Code](https://github.com/user-attachments/assets/f6f2cabe-e0ad-424d-89bd-06a47a766ee6)
 
-**SQL Results - Grid View**
-![Grid View](https://github.com/user-attachments/assets/66d62d06-8166-458a-8e39-ffb066038737)
+**Command Palette - All Available Commands**
+![Command Palette](https://github.com/user-attachments/assets/18234c7a-34d3-4106-a054-2ba3581ce9a1)
 
-**SQL Results - Text View**
-![Text View](https://github.com/user-attachments/assets/b0427b46-9903-4fcc-8959-52d526723c0d)
+**UML Diagram Designer - Visual Database Schema**
+![UML Designer](https://github.com/user-attachments/assets/1d3c3172-3f66-4179-abc2-7b0eb92dc2c8)
 
-**JavaScript Editor**
-![JavaScript](https://github.com/user-attachments/assets/70782907-94dc-477c-b0a3-1c58cb2d4b31)
+**Whiteboard Designer - Freeform Drawing Canvas**
+![Whiteboard](https://github.com/user-attachments/assets/25183255-2293-4bff-b585-83236f245643)
 
-**TypeScript Editor**
-![TypeScript](https://github.com/user-attachments/assets/eb61ef5c-6d30-45a9-813e-b8773b7150a4)
+**API Tester - REST API Testing Tool**
+![API Tester](https://github.com/user-attachments/assets/39c682cf-7dfb-40d3-822a-f30c588058f4)
 
-**C# Editor with IntelliSense**
-![C# Editor](https://github.com/user-attachments/assets/65682b2b-758f-49b9-b198-fe2523a722d2)
-
-**Database Query Execution**
-![Database](https://github.com/user-attachments/assets/e4a39bc0-e844-423e-bf86-8a574b3092fa)
-
-**Multi-File Support**
-![Multi-File](https://github.com/user-attachments/assets/4d484f0e-a309-40d7-a811-d9ea8533368c)
+**Multi-File Support with Tabs**
+![Multi-File](https://github.com/user-attachments/assets/c7110699-7542-4e4a-9430-8dfab1fd70c9)
 
 ## 🚀 Installation
 
