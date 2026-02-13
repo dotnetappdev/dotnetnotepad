@@ -1,6 +1,10 @@
 import React, { useRef } from 'react';
-import Editor from '@monaco-editor/react';
+import Editor, { loader } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 import './EditorPanel.css';
+
+// Configure loader to use local Monaco
+loader.config({ monaco });
 
 interface OpenFile {
   path: string;

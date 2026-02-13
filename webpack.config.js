@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -28,6 +29,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
+    }),
+    new MonacoWebpackPlugin({
+      languages: ['csharp', 'python', 'sql', 'vb', 'javascript', 'typescript', 'json', 'xml', 'html', 'css', 'markdown'],
     }),
   ],
   devServer: {

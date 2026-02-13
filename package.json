@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "monaco-editor": "^0.55.1",
+    "monaco-editor-webpack-plugin": "^7.1.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "xterm": "^5.3.0",
