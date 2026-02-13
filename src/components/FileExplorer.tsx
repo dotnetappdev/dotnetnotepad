@@ -52,6 +52,8 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileOpen }) => {
         { name: 'setup.py', type: 'file', path: '/scripts/setup.py' },
         { name: 'deploy.sql', type: 'file', path: '/scripts/deploy.sql' },
         { name: 'test.vb', type: 'file', path: '/scripts/test.vb' },
+        { name: 'app.js', type: 'file', path: '/scripts/app.js' },
+        { name: 'main.ts', type: 'file', path: '/scripts/main.ts' },
       ]
     },
     { name: 'README.md', type: 'file', path: '/README.md' },
@@ -135,6 +137,81 @@ Module Program
         Console.WriteLine("Hello from VB.NET!")
     End Sub
 End Module`;
+    } else if (filename.endsWith('.js')) {
+      return `// JavaScript Code
+const express = require('express');
+const app = express();
+
+// Middleware
+app.use(express.json());
+
+// Routes
+app.get('/', (req, res) => {
+    res.json({ message: 'Hello from JavaScript!' });
+});
+
+app.post('/api/data', (req, res) => {
+    const data = req.body;
+    console.log('Received data:', data);
+    res.status(201).json({ success: true, data });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(\`Server running on port \${PORT}\`);
+});`;
+    } else if (filename.endsWith('.ts')) {
+      return `// TypeScript Code
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    createdAt: Date;
+}
+
+class UserService {
+    private users: User[] = [];
+
+    constructor() {
+        this.initializeUsers();
+    }
+
+    private initializeUsers(): void {
+        this.users = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', createdAt: new Date() },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', createdAt: new Date() }
+        ];
+    }
+
+    public getUsers(): User[] {
+        return this.users;
+    }
+
+    public getUserById(id: number): User | undefined {
+        return this.users.find(user => user.id === id);
+    }
+
+    public addUser(user: Omit<User, 'id'>): User {
+        const newUser: User = {
+            ...user,
+            id: this.users.length + 1
+        };
+        this.users.push(newUser);
+        return newUser;
+    }
+}
+
+// Usage
+const userService = new UserService();
+console.log('All users:', userService.getUsers());
+
+const newUser = userService.addUser({
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    createdAt: new Date()
+});
+console.log('New user added:', newUser);`;
     }
     
     return `// Sample file: ${filename}\n// Add your code here`;
