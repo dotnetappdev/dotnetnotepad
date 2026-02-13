@@ -107,7 +107,7 @@ const ProjectTemplateDialog: React.FC<ProjectTemplateDialogProps> = ({
     return acc;
   }, {} as Record<string, ProjectTemplate[]>);
 
-  const isCSharpTemplate = selectedTemplate === 'console' || selectedTemplate === 'webapi' || selectedTemplate === 'classlib';
+  const isCSharpTemplate = templates.find(t => t.id === selectedTemplate)?.language === 'csharp';
 
   return (
     <div className="project-template-overlay" onClick={onClose}>

@@ -342,6 +342,10 @@ namespace ${projectName}.Controllers
     }
   };
 
+  const sanitizePackageName = (name: string): string => {
+    return name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+  };
+
   const handleCreateProjectFromTemplate = (template: ProjectTemplate, projectName: string, dotnetVersion: string) => {
     const projectFolder = `${workspaceFolder}/${projectName}`;
 
@@ -568,7 +572,7 @@ console.log('Welcome to ${projectName}');
 console.log('\\nExecution completed.');`;
 
       const packageJson = `{
-  "name": "${projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-')}",
+  "name": "${sanitizePackageName(projectName)}",
   "version": "1.0.0",
   "description": "Node.js application",
   "main": "index.js",
@@ -598,7 +602,7 @@ console.log('Welcome to ${projectName}');
 console.log('\\nExecution completed.');`;
 
       const packageJson = `{
-  "name": "${projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-')}",
+  "name": "${sanitizePackageName(projectName)}",
   "version": "1.0.0",
   "description": "TypeScript Node.js application",
   "main": "dist/index.js",
