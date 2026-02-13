@@ -50,6 +50,27 @@
   color: #ffffff;
 }
 
+.menu-dropdown-item.active {
+  background-color: #094771;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.menu-dropdown-item.active::before {
+  content: '✓ ';
+  margin-right: 4px;
+}
+
+.menu-dropdown-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.menu-dropdown-item.disabled:hover {
+  background-color: transparent;
+  color: #cccccc;
+}
+
 .menu-dropdown-item .shortcut {
   color: #858585;
   margin-left: 20px;

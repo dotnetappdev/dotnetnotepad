@@ -60,6 +60,14 @@ const App: React.FC = () => {
         e.preventDefault();
         handleExecuteCode();
       }
+      // Window switching shortcuts Ctrl+1 through Ctrl+9
+      if ((e.ctrlKey || e.metaKey) && e.key >= '1' && e.key <= '9') {
+        e.preventDefault();
+        const index = parseInt(e.key) - 1;
+        if (index < openFiles.length) {
+          setActiveFile(openFiles[index].path);
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -775,6 +783,9 @@ console.log('\\nExecution completed.');`;
         onToggleCommandPalette={() => setShowCommandPalette(true)}
         onToggleSearch={() => setShowSearch(!showSearch)}
         onAbout={() => setShowAboutDialog(true)}
+        openFiles={openFiles}
+        activeFile={activeFile}
+        onSwitchFile={setActiveFile}
       />
       <div className="main-container">
         <Sidebar onFileOpen={handleFileOpen} onSaveFile={handleSaveFile} />
