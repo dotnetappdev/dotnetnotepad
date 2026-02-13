@@ -3,6 +3,8 @@ import './MenuBar.css';
 
 interface MenuBarProps {
   onNewFile: () => void;
+  onNewUmlDiagram: () => void;
+  onNewCodeFile: () => void;
   onSaveFile: () => void;
   onOpenFolder: () => void;
   onToggleCommandPalette: () => void;
@@ -11,6 +13,8 @@ interface MenuBarProps {
 
 const MenuBar: React.FC<MenuBarProps> = ({
   onNewFile,
+  onNewUmlDiagram,
+  onNewCodeFile,
   onSaveFile,
   onOpenFolder,
   onToggleCommandPalette,
@@ -21,6 +25,9 @@ const MenuBar: React.FC<MenuBarProps> = ({
   const menus = {
     File: [
       { label: 'New File', action: onNewFile, shortcut: 'Ctrl+N' },
+      { label: 'New Code File', action: onNewCodeFile, shortcut: 'Ctrl+Alt+N' },
+      { label: 'New UML Diagram', action: onNewUmlDiagram, shortcut: 'Ctrl+Alt+U' },
+      { label: 'divider', action: () => {}, shortcut: '' },
       { label: 'Open Folder...', action: onOpenFolder, shortcut: 'Ctrl+O' },
       { label: 'Save', action: onSaveFile, shortcut: 'Ctrl+S' },
       { label: 'divider', action: () => {}, shortcut: '' },

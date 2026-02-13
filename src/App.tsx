@@ -5,12 +5,14 @@ import FileExplorer from './components/FileExplorer';
 import EditorPanel from './components/EditorPanel';
 import BottomPanel from './components/BottomPanel';
 import DatabasePanel from './components/DatabasePanel';
+import UmlDiagramDesigner from './components/UmlDiagramDesigner';
 import './App.css';
 
 interface OpenFile {
   path: string;
   content: string;
   language: string;
+  isUmlDiagram?: boolean;
 }
 
 interface QueryResult {
@@ -37,6 +39,14 @@ const App: React.FC = () => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         handleSaveFile();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.key === 'u') {
+        e.preventDefault();
+        handleNewUmlDiagram();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.key === 'n') {
+        e.preventDefault();
+        handleNewCodeFile();
       }
       if (e.key === 'F5') {
         e.preventDefault();
@@ -74,6 +84,42 @@ const App: React.FC = () => {
     const fileName = prompt('Enter file name:', 'newfile.cs');
     if (fileName) {
       handleFileOpen(`${workspaceFolder}/${fileName}`, '', 'plaintext');
+    }
+  };
+
+  const handleNewCodeFile = () => {
+    const fileType = prompt('Enter file type (cs, py, js, ts, sql, vb):', 'cs');
+    if (fileType) {
+      const fileName = prompt('Enter file name (without extension):', 'newfile');
+      if (fileName) {
+        const fullFileName = `${fileName}.${fileType}`;
+        const languageMap: { [key: string]: string } = {
+          'cs': 'csharp',
+          'py': 'python',
+          'sql': 'sql',
+          'vb': 'vb',
+          'js': 'javascript',
+          'ts': 'typescript',
+        };
+        const language = languageMap[fileType] || 'plaintext';
+        handleFileOpen(`${workspaceFolder}/${fullFileName}`, '', language);
+      }
+    }
+  };
+
+  const handleNewUmlDiagram = () => {
+    const fileName = prompt('Enter UML diagram name:', 'diagram');
+    if (fileName) {
+      const fullFileName = fileName.endsWith('.uml') ? fileName : `${fileName}.uml`;
+      const initialData = JSON.stringify({ tables: [], relationships: [] }, null, 2);
+      const newFile: OpenFile = {
+        path: `${workspaceFolder}/${fullFileName}`,
+        content: initialData,
+        language: 'json',
+        isUmlDiagram: true,
+      };
+      setOpenFiles([...openFiles, newFile]);
+      setActiveFile(newFile.path);
     }
   };
 
@@ -171,6 +217,8 @@ const App: React.FC = () => {
 
   const commands = [
     { id: 'new-file', label: 'New File', action: handleNewFile, category: 'File' },
+    { id: 'new-code-file', label: 'New Code File', action: handleNewCodeFile, category: 'File' },
+    { id: 'new-uml-diagram', label: 'New UML Diagram', action: handleNewUmlDiagram, category: 'File' },
     { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
     { id: 'open-folder', label: 'Open Folder', action: handleOpenFolder, category: 'File' },
     { id: 'toggle-database', label: 'Toggle Database Panel', action: () => setShowDatabase(!showDatabase), category: 'View' },
@@ -184,6 +232,8 @@ const App: React.FC = () => {
     <div className="app">
       <MenuBar
         onNewFile={handleNewFile}
+        onNewCodeFile={handleNewCodeFile}
+        onNewUmlDiagram={handleNewUmlDiagram}
         onSaveFile={handleSaveFile}
         onOpenFolder={handleOpenFolder}
         onToggleCommandPalette={() => setShowCommandPalette(true)}
@@ -194,14 +244,21 @@ const App: React.FC = () => {
           <FileExplorer onFileOpen={handleFileOpen} onSaveFile={handleSaveFile} />
         </div>
         <div className="content">
-          <EditorPanel
-            openFiles={openFiles}
-            activeFile={activeFile}
-            onFileSelect={setActiveFile}
-            onFileClose={handleFileClose}
-            onContentChange={handleContentChange}
-            onExecute={handleExecute}
-          />
+          {activeFileObj?.isUmlDiagram ? (
+            <UmlDiagramDesigner
+              initialData={activeFileObj.content}
+              onChange={(data) => handleContentChange(activeFileObj.path, data)}
+            />
+          ) : (
+            <EditorPanel
+              openFiles={openFiles}
+              activeFile={activeFile}
+              onFileSelect={setActiveFile}
+              onFileClose={handleFileClose}
+              onContentChange={handleContentChange}
+              onExecute={handleExecute}
+            />
+          )}
           <BottomPanel 
             consoleOutput={consoleOutput} 
             queryResults={queryResults}

@@ -1,0 +1,401 @@
+.uml-diagram-designer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  position: relative;
+}
+
+.uml-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #252526;
+  border-bottom: 1px solid #3e3e42;
+}
+
+.toolbar-btn {
+  padding: 6px 12px;
+  background: #0e639c;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.toolbar-btn:hover {
+  background: #1177bb;
+}
+
+.toolbar-info {
+  margin-left: auto;
+  font-size: 12px;
+  color: #888;
+}
+
+.uml-canvas {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  background: #1e1e1e;
+  background-image: 
+    linear-gradient(#2a2a2a 1px, transparent 1px),
+    linear-gradient(90deg, #2a2a2a 1px, transparent 1px);
+  background-size: 20px 20px;
+  cursor: default;
+}
+
+.relationship-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.uml-table {
+  position: absolute;
+  min-width: 150px;
+  background: #2d2d30;
+  border: 2px solid #3e3e42;
+  border-radius: 4px;
+  cursor: move;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.uml-table.selected {
+  border-color: #007acc;
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.3);
+}
+
+.table-header {
+  padding: 8px 12px;
+  background: #007acc;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 2px 2px 0 0;
+  text-align: center;
+  cursor: move;
+}
+
+.table-columns {
+  padding: 4px 0;
+}
+
+.table-column {
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 12px;
+  gap: 6px;
+  border-bottom: 1px solid #3e3e42;
+}
+
+.table-column:last-child {
+  border-bottom: none;
+}
+
+.pk-icon,
+.fk-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.pk-icon {
+  color: #ffd700;
+}
+
+.fk-icon {
+  color: #4CAF50;
+}
+
+.column-name {
+  flex: 1;
+  font-weight: 500;
+  color: #dcdcdc;
+}
+
+.column-type {
+  color: #888;
+  font-size: 11px;
+}
+
+.table-actions {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #252526;
+  border-top: 1px solid #3e3e42;
+  justify-content: center;
+}
+
+.table-action-btn {
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+.table-action-btn:hover {
+  background: #3e3e42;
+}
+
+.table-action-btn.delete:hover {
+  background: #c94c4c;
+}
+
+/* Table Editor Modal */
+.table-editor-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.table-editor {
+  background: #2d2d30;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  width: 600px;
+  max-width: 90%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #007acc;
+  color: white;
+  border-radius: 4px 4px 0 0;
+}
+
+.editor-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.editor-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #cccccc;
+}
+
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  background: #1e1e1e;
+  border: 1px solid #3e3e42;
+  border-radius: 3px;
+  color: #d4d4d4;
+  font-size: 13px;
+}
+
+.form-group input[type="text"]:focus {
+  outline: none;
+  border-color: #007acc;
+}
+
+.columns-section {
+  margin-top: 20px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #cccccc;
+}
+
+.add-btn {
+  padding: 4px 12px;
+  background: #0e639c;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.add-btn:hover {
+  background: #1177bb;
+}
+
+.columns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.column-editor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #252526;
+  border: 1px solid #3e3e42;
+  border-radius: 3px;
+}
+
+.column-name-input {
+  flex: 2;
+  padding: 6px 8px;
+  background: #1e1e1e;
+  border: 1px solid #3e3e42;
+  border-radius: 3px;
+  color: #d4d4d4;
+  font-size: 12px;
+}
+
+.column-type-input {
+  flex: 1.5;
+  padding: 6px 8px;
+  background: #1e1e1e;
+  border: 1px solid #3e3e42;
+  border-radius: 3px;
+  color: #d4d4d4;
+  font-size: 12px;
+}
+
+.fk-reference-input {
+  flex: 1.5;
+  padding: 6px 8px;
+  background: #1e1e1e;
+  border: 1px solid #3e3e42;
+  border-radius: 3px;
+  color: #d4d4d4;
+  font-size: 12px;
+}
+
+.column-name-input:focus,
+.column-type-input:focus,
+.fk-reference-input:focus {
+  outline: none;
+  border-color: #007acc;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #cccccc;
+  white-space: nowrap;
+}
+
+.checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.delete-column-btn {
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 3px;
+}
+
+.delete-column-btn:hover {
+  background: #c94c4c;
+  color: white;
+}
+
+.editor-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #252526;
+  border-top: 1px solid #3e3e42;
+  border-radius: 0 0 4px 4px;
+}
+
+.cancel-btn,
+.save-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.cancel-btn {
+  background: #3e3e42;
+  color: #d4d4d4;
+}
+
+.cancel-btn:hover {
+  background: #4e4e52;
+}
+
+.save-btn {
+  background: #0e639c;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #1177bb;
+}
