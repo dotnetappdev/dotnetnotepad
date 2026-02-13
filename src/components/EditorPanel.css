@@ -40,6 +40,60 @@
   margin-right: 8px;
 }
 
+.execution-controls {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.control-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.play-btn {
+  background-color: #16825d;
+  color: white;
+}
+
+.play-btn:hover {
+  background-color: #1e9e6d;
+  transform: scale(1.05);
+}
+
+.pause-btn {
+  background-color: #c5a020;
+  color: white;
+}
+
+.pause-btn:hover {
+  background-color: #d4b030;
+}
+
+.pause-btn.active {
+  background-color: #d4b030;
+}
+
+.stop-btn {
+  background-color: #d13438;
+  color: white;
+}
+
+.stop-btn:hover {
+  background-color: #e0474b;
+  transform: scale(1.05);
+}
+
 .execute-btn {
   margin-left: auto;
   padding: 4px 12px;

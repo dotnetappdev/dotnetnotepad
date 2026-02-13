@@ -30,12 +30,29 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
   onExecute,
 }) => {
   const editorRef = useRef<any>(null);
+  const [isRunning, setIsRunning] = React.useState(false);
+  const [isPaused, setIsPaused] = React.useState(false);
 
   const handleExecute = () => {
     const activeFileObj = openFiles.find(f => f.path === activeFile);
     if (activeFileObj && onExecute) {
+      setIsRunning(true);
+      setIsPaused(false);
       onExecute(activeFileObj.content, activeFileObj.language);
+      // Simulate execution completion after 2 seconds
+      setTimeout(() => {
+        setIsRunning(false);
+      }, 2000);
     }
+  };
+
+  const handlePause = () => {
+    setIsPaused(!isPaused);
+  };
+
+  const handleStop = () => {
+    setIsRunning(false);
+    setIsPaused(false);
   };
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -239,9 +256,34 @@ const EditorPanel: React.FC<EditorPanelProps> = ({
           </div>
         ))}
         {activeFile && onExecute && (
-          <button className="execute-btn" onClick={handleExecute} title="Run code (F5)">
-            ▶ Execute
-          </button>
+          <div className="execution-controls">
+            {!isRunning ? (
+              <button 
+                className="control-btn play-btn" 
+                onClick={handleExecute}
+                title="Run (F5)"
+              >
+                ▶
+              </button>
+            ) : (
+              <>
+                <button 
+                  className={`control-btn pause-btn ${isPaused ? 'active' : ''}`}
+                  onClick={handlePause}
+                  title="Pause"
+                >
+                  ⏸
+                </button>
+                <button 
+                  className="control-btn stop-btn" 
+                  onClick={handleStop}
+                  title="Stop"
+                >
+                  ⏹
+                </button>
+              </>
+            )}
+          </div>
         )}
       </div>
       <div className="editor-container">
