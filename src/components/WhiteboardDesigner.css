@@ -1,0 +1,125 @@
+.whiteboard-designer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.whiteboard-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 12px;
+  background: #252526;
+  border-bottom: 1px solid #3e3e42;
+  flex-wrap: wrap;
+}
+
+.tool-group {
+  display: flex;
+  gap: 4px;
+}
+
+.tool-btn {
+  padding: 8px 12px;
+  background: #3e3e42;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.tool-btn:hover:not(:disabled) {
+  background: #505050;
+}
+
+.tool-btn.active {
+  background: #0e639c;
+}
+
+.tool-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.color-picker {
+  display: flex;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #2d2d30;
+  border-radius: 4px;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.color-swatch.active {
+  outline: 3px solid #0e639c;
+  outline-offset: 2px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.toolbar-info {
+  font-size: 12px;
+  color: #888;
+}
+
+.whiteboard-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: white;
+  cursor: crosshair;
+}
+
+.whiteboard-canvas.selecting {
+  cursor: default;
+}
+
+.whiteboard-element {
+  position: absolute;
+  pointer-events: none;
+}
+
+.whiteboard-element.selected {
+  outline: 2px dashed #0e639c;
+  outline-offset: 2px;
+}
+
+.whiteboard-element.rect {
+  border-radius: 4px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.whiteboard-element.text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 8px;
+}
+
+.whiteboard-element.line {
+  height: 3px;
+  transform-origin: left center;
+}

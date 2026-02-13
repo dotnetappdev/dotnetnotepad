@@ -3,6 +3,12 @@ import './MenuBar.css';
 
 interface MenuBarProps {
   onNewFile: () => void;
+  onNewUmlDiagram: () => void;
+  onNewCodeFile: () => void;
+  onNewWhiteboard: () => void;
+  onNewApiTester: () => void;
+  onNewDotnetConsole: () => void;
+  onNewDotnetWebApi: () => void;
   onSaveFile: () => void;
   onOpenFolder: () => void;
   onToggleCommandPalette: () => void;
@@ -11,6 +17,12 @@ interface MenuBarProps {
 
 const MenuBar: React.FC<MenuBarProps> = ({
   onNewFile,
+  onNewUmlDiagram,
+  onNewCodeFile,
+  onNewWhiteboard,
+  onNewApiTester,
+  onNewDotnetConsole,
+  onNewDotnetWebApi,
   onSaveFile,
   onOpenFolder,
   onToggleCommandPalette,
@@ -21,6 +33,14 @@ const MenuBar: React.FC<MenuBarProps> = ({
   const menus = {
     File: [
       { label: 'New File', action: onNewFile, shortcut: 'Ctrl+N' },
+      { label: 'New Code File', action: onNewCodeFile, shortcut: 'Ctrl+Alt+N' },
+      { label: 'New UML Diagram', action: onNewUmlDiagram, shortcut: 'Ctrl+Alt+U' },
+      { label: 'New Whiteboard', action: onNewWhiteboard, shortcut: '' },
+      { label: 'New API Tester', action: onNewApiTester, shortcut: '' },
+      { label: 'divider', action: () => {}, shortcut: '' },
+      { label: 'New .NET Console App', action: onNewDotnetConsole, shortcut: '' },
+      { label: 'New .NET Web API', action: onNewDotnetWebApi, shortcut: '' },
+      { label: 'divider', action: () => {}, shortcut: '' },
       { label: 'Open Folder...', action: onOpenFolder, shortcut: 'Ctrl+O' },
       { label: 'Save', action: onSaveFile, shortcut: 'Ctrl+S' },
       { label: 'divider', action: () => {}, shortcut: '' },

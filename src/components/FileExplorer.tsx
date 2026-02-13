@@ -285,6 +285,37 @@ Result = BinarySearch(A, T) = 3`;
     setContextMenu(null);
   };
 
+  const handleNewCodeFile = (parentPath: string) => {
+    const fileType = prompt('Enter file type (cs, py, js, ts, sql, vb):', 'cs');
+    if (fileType) {
+      const fileName = prompt('Enter file name (without extension):', 'newfile');
+      if (fileName) {
+        const fullFileName = `${fileName}.${fileType}`;
+        const newPath = `${parentPath}/${fullFileName}`;
+        onFileOpen(newPath, '', getLanguage(fullFileName));
+      }
+    }
+    setContextMenu(null);
+  };
+
+  const handleNewFolder = (parentPath: string) => {
+    const folderName = prompt('Enter folder name:');
+    if (folderName) {
+      console.log('Create folder:', `${parentPath}/${folderName}`);
+      // In a real app, this would create the folder
+    }
+    setContextMenu(null);
+  };
+
+  const handleRename = (node: FileNode) => {
+    const newName = prompt('Enter new name:', node.name);
+    if (newName && newName !== node.name) {
+      console.log('Rename:', node.path, 'to', newName);
+      // In a real app, this would rename the file/folder
+    }
+    setContextMenu(null);
+  };
+
   const handleDeleteFile = (path: string) => {
     if (confirm(`Delete ${path}?`)) {
       console.log('Delete file:', path);
@@ -361,6 +392,16 @@ Result = BinarySearch(A, T) = 3`;
         >
           <div className="context-menu-item" onClick={() => handleNewFile(contextMenu.node.path)}>
             New File
+          </div>
+          <div className="context-menu-item" onClick={() => handleNewCodeFile(contextMenu.node.path)}>
+            New Code File
+          </div>
+          <div className="context-menu-item" onClick={() => handleNewFolder(contextMenu.node.path)}>
+            New Folder
+          </div>
+          <div className="context-menu-divider" />
+          <div className="context-menu-item" onClick={() => handleRename(contextMenu.node)}>
+            Rename
           </div>
           <div className="context-menu-item" onClick={() => console.log('Copy')}>
             Copy

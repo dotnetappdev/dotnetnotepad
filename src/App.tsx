@@ -5,12 +5,18 @@ import FileExplorer from './components/FileExplorer';
 import EditorPanel from './components/EditorPanel';
 import BottomPanel from './components/BottomPanel';
 import DatabasePanel from './components/DatabasePanel';
+import UmlDiagramDesigner from './components/UmlDiagramDesigner';
+import WhiteboardDesigner from './components/WhiteboardDesigner';
+import ApiTester from './components/ApiTester';
 import './App.css';
 
 interface OpenFile {
   path: string;
   content: string;
   language: string;
+  isUmlDiagram?: boolean;
+  isWhiteboard?: boolean;
+  isApiTester?: boolean;
 }
 
 interface QueryResult {
@@ -37,6 +43,14 @@ const App: React.FC = () => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         handleSaveFile();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.key === 'u') {
+        e.preventDefault();
+        handleNewUmlDiagram();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.key === 'n') {
+        e.preventDefault();
+        handleNewCodeFile();
       }
       if (e.key === 'F5') {
         e.preventDefault();
@@ -74,6 +88,255 @@ const App: React.FC = () => {
     const fileName = prompt('Enter file name:', 'newfile.cs');
     if (fileName) {
       handleFileOpen(`${workspaceFolder}/${fileName}`, '', 'plaintext');
+    }
+  };
+
+  const handleNewCodeFile = () => {
+    const fileType = prompt('Enter file type (cs, py, js, ts, sql, vb):', 'cs');
+    if (fileType) {
+      const fileName = prompt('Enter file name (without extension):', 'newfile');
+      if (fileName) {
+        const fullFileName = `${fileName}.${fileType}`;
+        const languageMap: { [key: string]: string } = {
+          'cs': 'csharp',
+          'py': 'python',
+          'sql': 'sql',
+          'vb': 'vb',
+          'js': 'javascript',
+          'ts': 'typescript',
+        };
+        const language = languageMap[fileType] || 'plaintext';
+        handleFileOpen(`${workspaceFolder}/${fullFileName}`, '', language);
+      }
+    }
+  };
+
+  const handleNewUmlDiagram = () => {
+    const fileName = prompt('Enter UML diagram name:', 'diagram');
+    if (fileName) {
+      const fullFileName = fileName.endsWith('.uml') ? fileName : `${fileName}.uml`;
+      const initialData = JSON.stringify({ tables: [], relationships: [] }, null, 2);
+      const newFile: OpenFile = {
+        path: `${workspaceFolder}/${fullFileName}`,
+        content: initialData,
+        language: 'json',
+        isUmlDiagram: true,
+      };
+      setOpenFiles([...openFiles, newFile]);
+      setActiveFile(newFile.path);
+    }
+  };
+
+  const handleNewWhiteboard = () => {
+    const fileName = prompt('Enter whiteboard name:', 'whiteboard');
+    if (fileName) {
+      const fullFileName = fileName.endsWith('.whiteboard') ? fileName : `${fileName}.whiteboard`;
+      const initialData = JSON.stringify({ elements: [] }, null, 2);
+      const newFile: OpenFile = {
+        path: `${workspaceFolder}/${fullFileName}`,
+        content: initialData,
+        language: 'json',
+        isWhiteboard: true,
+      };
+      setOpenFiles([...openFiles, newFile]);
+      setActiveFile(newFile.path);
+    }
+  };
+
+  const handleNewDotnetConsole = () => {
+    const projectName = prompt('Enter project name:', 'ConsoleApp');
+    if (projectName) {
+      const dotnetVersion = prompt('Enter .NET version (6.0, 7.0, 8.0):', '8.0') || '8.0';
+      const programCs = `using System;
+
+namespace ${projectName}
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Welcome to .NET Console Application");
+            Console.WriteLine(".NET Version: ${dotnetVersion}");
+            
+            // Your code here
+            
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
+    }
+}`;
+
+      const csproj = `<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net${dotnetVersion.replace('.', '')}</TargetFramework>
+    <RootNamespace>${projectName}</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>`;
+
+      // Create project files
+      const projectFolder = `${workspaceFolder}/${projectName}`;
+      handleFileOpen(`${projectFolder}/Program.cs`, programCs, 'csharp');
+      handleFileOpen(`${projectFolder}/${projectName}.csproj`, csproj, 'xml');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\n.NET Console Application '${projectName}' created successfully!`,
+        `Target Framework: .NET ${dotnetVersion}`,
+        `Files: Program.cs, ${projectName}.csproj`,
+      ]);
+    }
+  };
+
+  const handleNewDotnetWebApi = () => {
+    const projectName = prompt('Enter project name:', 'WebApiApp');
+    if (projectName) {
+      const dotnetVersion = prompt('Enter .NET version (6.0, 7.0, 8.0):', '8.0') || '8.0';
+      const programCs = `using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();`;
+
+      const weatherController = `using Microsoft.AspNetCore.Mvc;
+
+namespace ${projectName}.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class WeatherForecastController : ControllerBase
+    {
+        private static readonly string[] Summaries = new[]
+        {
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+
+        [HttpGet]
+        public IEnumerable<WeatherForecast> Get()
+        {
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<WeatherForecast> GetById(int id)
+        {
+            var forecast = new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(id)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            };
+            
+            return Ok(forecast);
+        }
+
+        [HttpPost]
+        public ActionResult<WeatherForecast> Create(WeatherForecast forecast)
+        {
+            return CreatedAtAction(nameof(GetById), new { id = 1 }, forecast);
+        }
+    }
+
+    public class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC * 1.8);
+        public string? Summary { get; set; }
+    }
+}`;
+
+      const csproj = `<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net${dotnetVersion.replace('.', '')}</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>${projectName}</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="${dotnetVersion}.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+</Project>`;
+
+      const appsettings = `{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}`;
+
+      // Create project files
+      const projectFolder = `${workspaceFolder}/${projectName}`;
+      handleFileOpen(`${projectFolder}/Program.cs`, programCs, 'csharp');
+      handleFileOpen(`${projectFolder}/Controllers/WeatherForecastController.cs`, weatherController, 'csharp');
+      handleFileOpen(`${projectFolder}/${projectName}.csproj`, csproj, 'xml');
+      handleFileOpen(`${projectFolder}/appsettings.json`, appsettings, 'json');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\n.NET Web API Application '${projectName}' created successfully!`,
+        `Target Framework: .NET ${dotnetVersion}`,
+        `Files: Program.cs, WeatherForecastController.cs, ${projectName}.csproj, appsettings.json`,
+        `API includes: Swagger UI, GET and POST endpoints`,
+      ]);
+    }
+  };
+
+  const handleNewApiTester = () => {
+    const fileName = prompt('Enter API test file name:', 'api-test');
+    if (fileName) {
+      const fullFileName = fileName.endsWith('.apitest') ? fileName : `${fileName}.apitest`;
+      const initialData = JSON.stringify({
+        collections: [],
+        requests: [],
+        bearerToken: ''
+      }, null, 2);
+      const newFile: OpenFile = {
+        path: `${workspaceFolder}/${fullFileName}`,
+        content: initialData,
+        language: 'json',
+        isApiTester: true,
+      };
+      setOpenFiles([...openFiles, newFile]);
+      setActiveFile(newFile.path);
     }
   };
 
@@ -171,6 +434,12 @@ const App: React.FC = () => {
 
   const commands = [
     { id: 'new-file', label: 'New File', action: handleNewFile, category: 'File' },
+    { id: 'new-code-file', label: 'New Code File', action: handleNewCodeFile, category: 'File' },
+    { id: 'new-uml-diagram', label: 'New UML Diagram', action: handleNewUmlDiagram, category: 'File' },
+    { id: 'new-whiteboard', label: 'New Whiteboard', action: handleNewWhiteboard, category: 'File' },
+    { id: 'new-api-tester', label: 'New API Tester', action: handleNewApiTester, category: 'File' },
+    { id: 'new-dotnet-console', label: 'New .NET Console App', action: handleNewDotnetConsole, category: 'File' },
+    { id: 'new-dotnet-webapi', label: 'New .NET Web API', action: handleNewDotnetWebApi, category: 'File' },
     { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
     { id: 'open-folder', label: 'Open Folder', action: handleOpenFolder, category: 'File' },
     { id: 'toggle-database', label: 'Toggle Database Panel', action: () => setShowDatabase(!showDatabase), category: 'View' },
@@ -184,6 +453,12 @@ const App: React.FC = () => {
     <div className="app">
       <MenuBar
         onNewFile={handleNewFile}
+        onNewCodeFile={handleNewCodeFile}
+        onNewUmlDiagram={handleNewUmlDiagram}
+        onNewWhiteboard={handleNewWhiteboard}
+        onNewApiTester={handleNewApiTester}
+        onNewDotnetConsole={handleNewDotnetConsole}
+        onNewDotnetWebApi={handleNewDotnetWebApi}
         onSaveFile={handleSaveFile}
         onOpenFolder={handleOpenFolder}
         onToggleCommandPalette={() => setShowCommandPalette(true)}
@@ -194,14 +469,31 @@ const App: React.FC = () => {
           <FileExplorer onFileOpen={handleFileOpen} onSaveFile={handleSaveFile} />
         </div>
         <div className="content">
-          <EditorPanel
-            openFiles={openFiles}
-            activeFile={activeFile}
-            onFileSelect={setActiveFile}
-            onFileClose={handleFileClose}
-            onContentChange={handleContentChange}
-            onExecute={handleExecute}
-          />
+          {activeFileObj?.isUmlDiagram ? (
+            <UmlDiagramDesigner
+              initialData={activeFileObj.content}
+              onChange={(data) => handleContentChange(activeFileObj.path, data)}
+            />
+          ) : activeFileObj?.isWhiteboard ? (
+            <WhiteboardDesigner
+              initialData={activeFileObj.content}
+              onChange={(data) => handleContentChange(activeFileObj.path, data)}
+            />
+          ) : activeFileObj?.isApiTester ? (
+            <ApiTester
+              initialData={activeFileObj.content}
+              onChange={(data) => handleContentChange(activeFileObj.path, data)}
+            />
+          ) : (
+            <EditorPanel
+              openFiles={openFiles}
+              activeFile={activeFile}
+              onFileSelect={setActiveFile}
+              onFileClose={handleFileClose}
+              onContentChange={handleContentChange}
+              onExecute={handleExecute}
+            />
+          )}
           <BottomPanel 
             consoleOutput={consoleOutput} 
             queryResults={queryResults}
