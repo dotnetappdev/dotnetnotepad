@@ -8,6 +8,7 @@ import DatabasePanel from './components/DatabasePanel';
 import UmlDiagramDesigner from './components/UmlDiagramDesigner';
 import WhiteboardDesigner from './components/WhiteboardDesigner';
 import ApiTester from './components/ApiTester';
+import ProjectTemplateDialog, { ProjectTemplate } from './components/ProjectTemplateDialog';
 import './App.css';
 
 interface OpenFile {
@@ -30,6 +31,7 @@ const App: React.FC = () => {
   const [showDatabase, setShowDatabase] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showProjectTemplateDialog, setShowProjectTemplateDialog] = useState(false);
   const [workspaceFolder, setWorkspaceFolder] = useState('/workspace');
   const [consoleOutput, setConsoleOutput] = useState<string[]>([]);
   const [queryResults, setQueryResults] = useState<QueryResult | null>(null);
@@ -340,6 +342,308 @@ namespace ${projectName}.Controllers
     }
   };
 
+  const handleCreateProjectFromTemplate = (template: ProjectTemplate, projectName: string, dotnetVersion: string) => {
+    const projectFolder = `${workspaceFolder}/${projectName}`;
+
+    if (template.id === 'console') {
+      const programCs = `using System;
+
+namespace ${projectName}
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Welcome to .NET Console Application");
+            Console.WriteLine(".NET Version: ${dotnetVersion}");
+            
+            // Your code here
+            
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
+    }
+}`;
+
+      const csproj = `<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net${dotnetVersion.replace('.', '')}</TargetFramework>
+    <RootNamespace>${projectName}</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>`;
+
+      handleFileOpen(`${projectFolder}/Program.cs`, programCs, 'csharp');
+      handleFileOpen(`${projectFolder}/${projectName}.csproj`, csproj, 'xml');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\n.NET Console Application '${projectName}' created successfully!`,
+        `Target Framework: .NET ${dotnetVersion}`,
+        `Files: Program.cs, ${projectName}.csproj`,
+      ]);
+    } else if (template.id === 'webapi') {
+      const programCs = `using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();`;
+
+      const weatherController = `using Microsoft.AspNetCore.Mvc;
+
+namespace ${projectName}.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class WeatherForecastController : ControllerBase
+    {
+        private static readonly string[] Summaries = new[]
+        {
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+
+        [HttpGet]
+        public IEnumerable<WeatherForecast> Get()
+        {
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<WeatherForecast> GetById(int id)
+        {
+            var forecast = new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(id)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            };
+            
+            return Ok(forecast);
+        }
+
+        [HttpPost]
+        public ActionResult<WeatherForecast> Create(WeatherForecast forecast)
+        {
+            return CreatedAtAction(nameof(GetById), new { id = 1 }, forecast);
+        }
+    }
+
+    public class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC * 1.8);
+        public string? Summary { get; set; }
+    }
+}`;
+
+      const csproj = `<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net${dotnetVersion.replace('.', '')}</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>${projectName}</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="${dotnetVersion}.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+</Project>`;
+
+      const appsettings = `{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}`;
+
+      handleFileOpen(`${projectFolder}/Program.cs`, programCs, 'csharp');
+      handleFileOpen(`${projectFolder}/Controllers/WeatherForecastController.cs`, weatherController, 'csharp');
+      handleFileOpen(`${projectFolder}/${projectName}.csproj`, csproj, 'xml');
+      handleFileOpen(`${projectFolder}/appsettings.json`, appsettings, 'json');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\n.NET Web API Application '${projectName}' created successfully!`,
+        `Target Framework: .NET ${dotnetVersion}`,
+        `Files: Program.cs, WeatherForecastController.cs, ${projectName}.csproj, appsettings.json`,
+        `API includes: Swagger UI, GET and POST endpoints`,
+      ]);
+    } else if (template.id === 'classlib') {
+      const classCs = `namespace ${projectName}
+{
+    public class Class1
+    {
+        public string GetMessage()
+        {
+            return "Hello from ${projectName} library!";
+        }
+    }
+}`;
+
+      const csproj = `<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net${dotnetVersion.replace('.', '')}</TargetFramework>
+    <RootNamespace>${projectName}</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>`;
+
+      handleFileOpen(`${projectFolder}/Class1.cs`, classCs, 'csharp');
+      handleFileOpen(`${projectFolder}/${projectName}.csproj`, csproj, 'xml');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\n.NET Class Library '${projectName}' created successfully!`,
+        `Target Framework: .NET ${dotnetVersion}`,
+        `Files: Class1.cs, ${projectName}.csproj`,
+      ]);
+    } else if (template.id === 'python-console') {
+      const mainPy = `# ${projectName} - Python Application
+def main():
+    print("Hello from Python!")
+    print("Welcome to ${projectName}")
+    
+    # Your code here
+    
+    print("\\nExecution completed.")
+
+if __name__ == "__main__":
+    main()`;
+
+      handleFileOpen(`${projectFolder}/main.py`, mainPy, 'python');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\nPython Application '${projectName}' created successfully!`,
+        `Files: main.py`,
+      ]);
+    } else if (template.id === 'javascript-node') {
+      const indexJs = `// ${projectName} - Node.js Application
+console.log('Hello from Node.js!');
+console.log('Welcome to ${projectName}');
+
+// Your code here
+
+console.log('\\nExecution completed.');`;
+
+      const packageJson = `{
+  "name": "${projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-')}",
+  "version": "1.0.0",
+  "description": "Node.js application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}`;
+
+      handleFileOpen(`${projectFolder}/index.js`, indexJs, 'javascript');
+      handleFileOpen(`${projectFolder}/package.json`, packageJson, 'json');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\nNode.js Application '${projectName}' created successfully!`,
+        `Files: index.js, package.json`,
+      ]);
+    } else if (template.id === 'typescript-node') {
+      const indexTs = `// ${projectName} - TypeScript Node.js Application
+console.log('Hello from TypeScript!');
+console.log('Welcome to ${projectName}');
+
+// Your code here
+
+console.log('\\nExecution completed.');`;
+
+      const packageJson = `{
+  "name": "${projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-')}",
+  "version": "1.0.0",
+  "description": "TypeScript Node.js application",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
+  }
+}`;
+
+      const tsconfigJson = `{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}`;
+
+      handleFileOpen(`${projectFolder}/src/index.ts`, indexTs, 'typescript');
+      handleFileOpen(`${projectFolder}/package.json`, packageJson, 'json');
+      handleFileOpen(`${projectFolder}/tsconfig.json`, tsconfigJson, 'json');
+      
+      setConsoleOutput(prev => [
+        ...prev,
+        `\nTypeScript Node.js Application '${projectName}' created successfully!`,
+        `Files: src/index.ts, package.json, tsconfig.json`,
+      ]);
+    }
+  };
+
   const handleSaveFile = () => {
     if (activeFile) {
       const file = openFiles.find(f => f.path === activeFile);
@@ -438,6 +742,7 @@ namespace ${projectName}.Controllers
     { id: 'new-uml-diagram', label: 'New UML Diagram', action: handleNewUmlDiagram, category: 'File' },
     { id: 'new-whiteboard', label: 'New Whiteboard', action: handleNewWhiteboard, category: 'File' },
     { id: 'new-api-tester', label: 'New API Tester', action: handleNewApiTester, category: 'File' },
+    { id: 'new-project', label: 'New Project...', action: () => setShowProjectTemplateDialog(true), category: 'File' },
     { id: 'new-dotnet-console', label: 'New .NET Console App', action: handleNewDotnetConsole, category: 'File' },
     { id: 'new-dotnet-webapi', label: 'New .NET Web API', action: handleNewDotnetWebApi, category: 'File' },
     { id: 'save-file', label: 'Save File', action: handleSaveFile, category: 'File' },
@@ -457,8 +762,8 @@ namespace ${projectName}.Controllers
         onNewUmlDiagram={handleNewUmlDiagram}
         onNewWhiteboard={handleNewWhiteboard}
         onNewApiTester={handleNewApiTester}
-        onNewDotnetConsole={handleNewDotnetConsole}
-        onNewDotnetWebApi={handleNewDotnetWebApi}
+        onNewDotnetConsole={() => setShowProjectTemplateDialog(true)}
+        onNewDotnetWebApi={() => setShowProjectTemplateDialog(true)}
         onSaveFile={handleSaveFile}
         onOpenFolder={handleOpenFolder}
         onToggleCommandPalette={() => setShowCommandPalette(true)}
@@ -507,6 +812,11 @@ namespace ${projectName}.Controllers
         isOpen={showCommandPalette}
         onClose={() => setShowCommandPalette(false)}
         commands={commands}
+      />
+      <ProjectTemplateDialog
+        isOpen={showProjectTemplateDialog}
+        onClose={() => setShowProjectTemplateDialog(false)}
+        onCreateProject={handleCreateProjectFromTemplate}
       />
     </div>
   );
