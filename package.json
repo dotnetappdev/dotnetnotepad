@@ -21,7 +21,10 @@
     "url": "git+https://github.com/dotnetappdev/dotnetnotepad.git"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "dotnetappdev",
+    "email": "dotnetappdevni@gmail.com"
+  },
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
@@ -32,6 +35,7 @@
     "appId": "com.dotnetappdev.dotnetnotepad",
     "productName": ".NET Notepad",
     "copyright": "Copyright © 2026 dotnetappdev",
+    "publish": null,
     "directories": {
       "output": "release"
     },
