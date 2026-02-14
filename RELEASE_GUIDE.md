@@ -6,8 +6,26 @@ This guide explains how to create releases for .NET Notepad with automatic build
 
 - Repository access with push permissions
 - Git installed locally
+- Node.js installed (for automated script)
 
 ## Creating a New Release
+
+### Quick Method: Using the Release Script
+
+The easiest way to create a release is using the automated script:
+
+```bash
+./create-release.sh
+```
+
+This script will:
+1. Prompt you for the new version number
+2. Update `package.json` automatically
+3. Commit and push the changes
+4. Create and push the version tag
+5. Trigger the GitHub Actions build
+
+### Manual Method
 
 ### Step 1: Update Version Number
 

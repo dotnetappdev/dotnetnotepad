@@ -2,6 +2,18 @@
 
 A comprehensive TypeScript-based .NET notepad application with VS Code-like features, Monaco Editor, database connectivity, code execution, and multi-language support.
 
+## 📦 Download
+
+**[⬇️ Download Latest Release](https://github.com/dotnetappdev/dotnetnotepad/releases/latest)**
+
+Pre-built installers are available for all platforms:
+- **Windows**: NSIS Installer (recommended) or Portable EXE
+- **Linux**: AppImage (universal) or DEB package
+- **macOS**: DMG disk image
+- **Web**: ZIP file - extract and run in browser
+
+All releases are automatically built and published via GitHub Actions.
+
 ## 🌍 Platform Support
 
 **Available on all major platforms:**
@@ -327,6 +339,22 @@ All builds are automatically generated via GitHub Actions on every release.
 
 ## 🚀 Installation
 
+### Option 1: Download Pre-built Installers (Recommended)
+
+**[Download from GitHub Releases](https://github.com/dotnetappdev/dotnetnotepad/releases/latest)**
+
+Choose the appropriate file for your platform:
+- **Windows**: Download the `.exe` installer or portable version
+- **Linux**: Download the `.AppImage` (universal) or `.deb` package
+- **macOS**: Download the `.dmg` disk image
+- **Web**: Download `dotnetnotepad-web.zip`, extract, and open `index.html`
+
+No compilation or setup required - just download and run!
+
+### Option 2: Build from Source
+
+For development or customization:
+
 ```bash
 # Clone the repository
 git clone https://github.com/dotnetappdev/dotnetnotepad.git
@@ -438,22 +466,48 @@ Built applications will be in the `release/` directory.
 
 This project includes automated builds for all major platforms via GitHub Actions.
 
-### Creating a Release
+### For Maintainers: Creating a Release
 
-1. **Tag your release:**
+#### Quick Method (Recommended)
+
+Use the automated release script:
+
+```bash
+./create-release.sh
+```
+
+The script will guide you through:
+- Version number selection
+- Automatic `package.json` update
+- Git commit and tag creation
+- Triggering the build pipeline
+
+#### Manual Method
+
+1. **Update version in `package.json`:**
+   ```json
+   {
+     "version": "1.0.0.1"
+   }
+   ```
+
+2. **Commit and tag your release:**
    ```bash
+   git add package.json
+   git commit -m "Bump version to 1.0.0.1"
+   git push origin main
    git tag v1.0.0.1
    git push origin v1.0.0.1
    ```
 
-2. **GitHub Actions will automatically:**
+3. **GitHub Actions will automatically:**
    - Build the web version (ZIP file)
    - Build Windows executables (NSIS installer and portable exe)
    - Build Linux packages (AppImage and DEB)
    - Build macOS disk image (DMG)
    - Create a GitHub release with all binaries attached
 
-3. **Manual trigger:**
+4. **Manual trigger (builds without release):**
    You can also trigger builds manually from the Actions tab in GitHub.
 
 ### Available Downloads
