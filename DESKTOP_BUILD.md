@@ -244,13 +244,31 @@ The "Check for Updates" feature in the About dialog already checks GitHub releas
 
 ## Distribution
 
-### GitHub Releases
-1. Tag version: `git tag v1.0.0.1`
-2. Push tag: `git push origin v1.0.0.1`
-3. Create release on GitHub
-4. Upload built installers as release assets
+### Automated GitHub Releases (Recommended)
 
-### Alternative Distribution
+This project includes automated release workflows. When you push a version tag, GitHub Actions automatically builds all platform installers and creates a release.
+
+**Quick release creation:**
+```bash
+./create-release.sh
+```
+
+**Manual release creation:**
+1. Update version in `package.json`
+2. Commit changes: `git commit -m "Bump version to X.Y.Z.W"`
+3. Tag version: `git tag vX.Y.Z.W`
+4. Push: `git push origin main && git push origin vX.Y.Z.W`
+
+GitHub Actions will automatically:
+- Build Windows installers (NSIS and portable)
+- Build Linux packages (AppImage and DEB)
+- Build macOS DMG
+- Build web version ZIP
+- Create GitHub release with all binaries
+
+See [RELEASE_GUIDE.md](RELEASE_GUIDE.md) for detailed instructions.
+
+### Manual Distribution
 - Microsoft Store (Windows)
 - Snap Store (Linux)
 - Mac App Store (macOS)
