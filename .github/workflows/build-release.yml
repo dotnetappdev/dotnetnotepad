@@ -67,6 +67,8 @@ jobs:
           path: |
             release/*.exe
             release/*.zip
+            release/*.appx
+            release/*.msix
 
   build-linux:
     name: Build Linux

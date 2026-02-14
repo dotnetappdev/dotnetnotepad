@@ -21,7 +21,7 @@ The workflow runs automatically when you push a tag starting with `v` (e.g., `v1
 
 **What it does:**
 - Builds web version (creates ZIP file)
-- Builds Windows installers (NSIS installer + portable EXE)
+- Builds Windows installers (NSIS installer, MSIX package, and portable EXE)
 - Builds Linux packages (AppImage + DEB)
 - Builds macOS disk image (DMG)
 - Creates a GitHub release
@@ -82,7 +82,7 @@ git push origin v1.0.0.1
 Go to: https://github.com/dotnetappdev/dotnetnotepad/releases/latest
 
 Choose your platform:
-- **Windows**: `.NET Notepad Setup.exe` (installer) or `.NET Notepad.exe` (portable)
+- **Windows**: `.NET Notepad Setup.exe` (NSIS installer), `.msix` or `.appx` (MSIX package), or `.NET Notepad.exe` (portable)
 - **Linux**: `.NET Notepad.AppImage` (universal) or `dotnetnotepad_*.deb` (Debian/Ubuntu)
 - **macOS**: `.NET Notepad.dmg`
 - **Web**: `dotnetnotepad-web.zip` (extract and open index.html)

@@ -7,7 +7,7 @@ A comprehensive TypeScript-based .NET notepad application with VS Code-like feat
 **[⬇️ Download Latest Release](https://github.com/dotnetappdev/dotnetnotepad/releases/latest)**
 
 Pre-built installers are available for all platforms:
-- **Windows**: NSIS Installer (recommended) or Portable EXE
+- **Windows**: NSIS Installer (recommended), MSIX Package, or Portable EXE
 - **Linux**: AppImage (universal) or DEB package
 - **macOS**: DMG disk image
 - **Web**: ZIP file - extract and run in browser
@@ -17,7 +17,7 @@ All releases are automatically built and published via GitHub Actions.
 ## 🌍 Platform Support
 
 **Available on all major platforms:**
-- 🪟 **Windows** - NSIS Installer and Portable EXE
+- 🪟 **Windows** - NSIS Installer, MSIX Package, and Portable EXE
 - 🐧 **Linux** - AppImage (universal) and DEB packages
 - 🍎 **macOS** - DMG disk image
 - 🌐 **Web** - Run in any modern browser
@@ -344,7 +344,7 @@ All builds are automatically generated via GitHub Actions on every release.
 **[Download from GitHub Releases](https://github.com/dotnetappdev/dotnetnotepad/releases/latest)**
 
 Choose the appropriate file for your platform:
-- **Windows**: Download the `.exe` installer or portable version
+- **Windows**: Download the NSIS installer (`.exe`), MSIX package (`.msix` or `.appx`), or portable version
 - **Linux**: Download the `.AppImage` (universal) or `.deb` package
 - **macOS**: Download the `.dmg` disk image
 - **Web**: Download `dotnetnotepad-web.zip`, extract, and open `index.html`
