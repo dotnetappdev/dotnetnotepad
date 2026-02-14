@@ -138,6 +138,14 @@ npm run dist
 
 ### For Maintainers - Creating Releases
 
+**Quick Method (Recommended):**
+```bash
+./create-release.sh
+```
+
+The automated script will guide you through the process.
+
+**Manual Method:**
 ```bash
 # 1. Update version in package.json
 # 2. Commit and push changes
