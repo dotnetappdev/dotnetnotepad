@@ -42,6 +42,8 @@ The script will:
 ```bash
 # 1. Update version in package.json
 # Change "version": "1.0.0" to "1.0.0.0"
+# Note: This project uses 4-digit versioning (Major.Minor.Patch.Build)
+# See RELEASE_GUIDE.md for details on the version numbering system
 
 # 2. Commit and push
 git add package.json
@@ -92,6 +94,11 @@ The new MSIX package format provides:
 - ✅ **Sandboxed execution** for better security
 - ✅ **Digital signature** support
 - ✅ **Microsoft Store** compatibility (future)
+
+**Note about certificates**: The current MSIX configuration uses a self-signed certificate (`CN=dotnetappdev`). For production releases:
+- Users will need to manually trust the certificate on first install
+- For better user experience, consider obtaining a code signing certificate from a trusted Certificate Authority
+- This is not required for the NSIS installer or portable EXE
 
 ## Summary
 
