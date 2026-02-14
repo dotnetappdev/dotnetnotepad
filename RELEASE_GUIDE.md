@@ -63,6 +63,7 @@ Once you push the tag, GitHub Actions will automatically:
 
 2. **Build Windows** (on Windows runner)
    - Creates NSIS installer: `.NET Notepad Setup 1.0.0.2.exe`
+   - Creates MSIX package: `.NET Notepad 1.0.0.2.msix` or `.appx`
    - Creates portable exe: `.NET Notepad 1.0.0.2.exe`
 
 3. **Build Linux** (on Ubuntu runner)
@@ -166,8 +167,9 @@ Once a release is created, users can:
    - Or open `dist/index.html` locally
 
 3. **Windows:**
-   - Run the installer for full installation
-   - Or use the portable exe (no installation)
+   - Run the NSIS installer (`.exe`) for full installation with Start Menu shortcuts
+   - Install the MSIX package (`.msix` or `.appx`) for Microsoft Store-style installation
+   - Or use the portable exe (no installation required)
 
 4. **Linux:**
    - AppImage: `chmod +x *.AppImage && ./filename.AppImage`

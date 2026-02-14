@@ -53,9 +53,15 @@
         {
           "target": "portable",
           "arch": ["x64"]
+        },
+        {
+          "target": "appx",
+          "arch": ["x64"]
         }
       ],
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "publisherName": "CN=dotnetappdev",
+      "applicationId": "dotnetappdev.DotNetNotepad"
     },
     "mac": {
       "target": "dmg",
